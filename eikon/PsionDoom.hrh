@@ -1,0 +1,10 @@
+//	PsionDoom.hrh
+//
+// Copyright 17/02/2019 
+
+enum TPsionDoomCommands
+	{
+	EPsionDoomCmdFileName=100,
+	EStartGameCmd,
+	EBenchmarkCmd
+	};

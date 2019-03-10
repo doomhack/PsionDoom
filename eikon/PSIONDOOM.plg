@@ -1,0 +1,324 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: PSIONDOOM - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1AF.tmp" with contents
+[
+/nologo /Zp4 /MDd /W4 /ZI /Od /X /I "\PSIONDOOM\EIKON" /I "\PSIONDOOM\EIKON\LIBTIMIDITY" /I "\EPOC32\INCLUDE" /I "\EPOC32\INCLUDE\LIBC" /D "__SYMBIAN32__" /D "__PSISOFT32__" /D "__VC32__" /D "__WINS__" /D "__DLL__" /D "_DEBUG" /FR"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /Fo"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /Fd"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /FD /c 
+"C:\PSIONDOOM\EIKON\R_draw.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1AF.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B0.tmp" with contents
+[
+\EPOC32\RELEASE\WINS\DEB\EDLL.OBJ \EPOC32\RELEASE\WINS\DEB\euser.lib \EPOC32\RELEASE\WINS\DEB\fbscli.lib \EPOC32\RELEASE\WINS\DEB\ws32.lib \EPOC32\RELEASE\WINS\DEB\estlib.lib msvcrt.lib /nologo /entry:"_E32Dll" /subsystem:windows /dll /incremental:yes /pdb:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.pdb" /debug /machine:IX86 /nodefaultlib /out:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.dll" /implib:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.lib" /WARN:3 
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Am_map.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Audio.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\common.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_client.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_deh.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_items.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_main.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Doomdef.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Doomstat.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Dstrings.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\F_finale.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\F_wipe.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\G_game.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Hu_lib.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Hu_stuff.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_audio.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_joy.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_main.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_system.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_system_e32.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_video.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Info.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\instrum.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Lprintf.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_argv.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_bbox.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_cheat.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_menu.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_misc.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_random.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Md5.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\mix.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Mmus2mid.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\output.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_ceilng.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_checksum.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_doors.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_enemy.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_floor.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_genlin.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_inter.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_lights.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_map.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_maputl.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_mobj.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_plats.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_pspr.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_saveg.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_setup.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_sight.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_spec.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_switch.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_telept.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_tick.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_user.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\playmidi.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Psiondoom.uid.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_bsp.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_data.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_demo.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_draw.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_filter.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_fps.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_main.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_patch.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_plane.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_segs.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_sky.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_things.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\readmidi.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\resample.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\S_sound.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Sounds.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\St_lib.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\St_stuff.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\stream.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Tables.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\timi_tables.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\timidity.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\V_video.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Version.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\W_memcache.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\W_wad.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Wi_stuff.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_bmalloc.obj
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_zone.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B0.tmp"
+<h3>Output Window</h3>
+Compiling...
+R_draw.c
+c:\psiondoom\eikon\r_drawflush.inl(212) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_draw.c(419) : warning C4244: 'initializing' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(424) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(438) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawspan.inl(75) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawspan.inl(75) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
+c:\psiondoom\eikon\r_drawspan.inl(75) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_draw.c(650) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(69) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\r_draw.c(650) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(82) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\r_draw.c(650) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(93) : see declaration of 'FixedMod'
+Linking...
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B1.tmp" with contents
+[
+/nologo /o"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.bsc" 
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Am_map.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Audio.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\common.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_client.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_deh.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_items.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\D_main.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Doomdef.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Doomstat.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Dstrings.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\F_finale.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\F_wipe.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\G_game.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Hu_lib.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Hu_stuff.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_audio.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_joy.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_main.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_system.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_system_e32.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\I_video.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Info.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\instrum.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Lprintf.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_argv.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_bbox.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_cheat.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_menu.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_misc.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\M_random.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Md5.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\mix.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Mmus2mid.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\output.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_ceilng.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_checksum.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_doors.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_enemy.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_floor.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_genlin.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_inter.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_lights.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_map.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_maputl.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_mobj.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_plats.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_pspr.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_saveg.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_setup.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_sight.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_spec.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_switch.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_telept.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_tick.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\P_user.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\playmidi.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Psiondoom.uid.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_bsp.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_data.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_demo.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_draw.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_filter.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_fps.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_main.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_patch.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_plane.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_segs.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_sky.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_things.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\readmidi.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\resample.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\S_sound.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Sounds.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\St_lib.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\St_stuff.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\stream.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Tables.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\timi_tables.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\timidity.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\V_video.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Version.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\W_memcache.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\W_wad.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Wi_stuff.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_bmalloc.sbr
+\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_zone.sbr]
+Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B1.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+PSIONDOOM.dll - 0 error(s), 112 warning(s)
+</pre>
+</body>
+</html>

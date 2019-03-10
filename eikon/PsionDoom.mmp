@@ -1,0 +1,123 @@
+TARGET	PsionDoom
+TARGETTYPE		EXEDLL
+UID				0
+UNICODEUID		0
+EPOCSTACKSIZE	0x10000
+EPOCHEAPSIZE	0x10000 0x800000
+
+PROJECT	PsionDoom
+SUBPROJECT	eikon
+
+SOURCE am_map.c
+SOURCE audio.cpp
+SOURCE d_client.c
+SOURCE d_deh.c
+SOURCE d_items.c
+SOURCE d_main.c
+SOURCE doomdef.c
+SOURCE doomstat.c
+SOURCE dstrings.c
+SOURCE f_finale.c
+SOURCE f_wipe.c
+SOURCE g_game.c
+SOURCE hu_lib.c
+SOURCE hu_stuff.c
+SOURCE i_audio.cpp
+SOURCE i_joy.c
+SOURCE i_main.c
+SOURCE i_system.c
+SOURCE i_system_e32.cpp
+SOURCE i_video.c
+SOURCE info.c
+SOURCE lprintf.c
+SOURCE m_argv.c
+SOURCE m_bbox.c
+SOURCE m_cheat.c
+SOURCE m_menu.c
+SOURCE m_misc.c
+SOURCE m_random.c
+SOURCE md5.c
+SOURCE p_ceilng.c
+SOURCE p_checksum.c
+SOURCE p_doors.c
+SOURCE p_enemy.c
+SOURCE p_floor.c
+SOURCE p_genlin.c
+SOURCE p_inter.c
+SOURCE p_lights.c
+SOURCE p_map.c
+SOURCE p_maputl.c
+SOURCE p_mobj.c
+SOURCE p_plats.c
+SOURCE p_pspr.c
+SOURCE p_saveg.c
+SOURCE p_setup.c
+SOURCE p_sight.c
+SOURCE p_spec.c
+SOURCE p_switch.c
+SOURCE p_telept.c
+SOURCE p_tick.c
+SOURCE p_user.c
+SOURCE r_bsp.c
+SOURCE r_data.c
+SOURCE r_demo.c
+SOURCE r_draw.c
+SOURCE r_filter.c
+SOURCE r_fps.c
+SOURCE r_main.c
+SOURCE r_patch.c
+SOURCE r_plane.c
+SOURCE r_segs.c
+SOURCE r_sky.c
+SOURCE r_things.c
+SOURCE s_sound.c
+SOURCE sounds.c
+SOURCE st_lib.c
+SOURCE st_stuff.c
+SOURCE tables.c
+SOURCE v_video.c
+SOURCE version.c
+SOURCE w_memcache.c
+SOURCE w_wad.c
+SOURCE wi_stuff.c
+SOURCE z_bmalloc.c
+SOURCE z_zone.c
+
+SOURCE mmus2mid.c
+
+SOURCE libtimidity\timidity.c
+SOURCE libtimidity\common.c
+SOURCE libtimidity\instrum.c
+SOURCE libtimidity\mix.c
+SOURCE libtimidity\output.c
+SOURCE libtimidity\playmidi.c
+SOURCE libtimidity\readmidi.c
+SOURCE libtimidity\resample.c
+SOURCE libtimidity\stream.c
+SOURCE libtimidity\timi_tables.c
+
+DOCUMENT PsionDoom.mmp
+
+USERINCLUDE .
+USERINCLUDE libtimidity
+SYSTEMINCLUDE	\epoc32\include
+SYSTEMINCLUDE	\epoc32\include\libc
+
+
+#ifndef WINS
+SUBPROJECT		eikon\gcc
+SOURCE			libgcc2.c
+#endif
+
+
+LIBRARY	EUSER.LIB FBSCLI.LIB WS32.LIB ESTLIB.LIB
+
+//#ifdef WINS
+//LIBRARY ECRT0.obj
+//#else
+//LIBRARY ECRT0.O 
+//#endif
+
+//START WINS
+//WIN32_LIBRARY MSVCRT.LIB
+//END

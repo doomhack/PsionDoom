@@ -1,0 +1,18 @@
+;
+; Install file for PsionDoom
+;
+; No languages - English (UK) by default
+;
+; Only one component name as we only support English
+; UID is the app's UID - see PsionDoom.mmp
+;
+#{"PsionDoom"},(0x01007acc),1,0,0
+;
+; Three files to install
+;
+"\Epoc32\Release\Marm\Rel\PsionDoom.app"-"!:\system\apps\PsionDoom\PsionDoom.app"
+"\Epoc32\Release\Marm\Rel\PsionDoom.rsc"-"!:\system\apps\PsionDoom\PsionDoom.rsc"
+"\PsionDoom\aif\PsionDoom.aif"-"!:\system\apps\PsionDoom\PsionDoom.aif"
+
+; Make sure we remove our ini file when we uninstall.
+""-"!:\system\apps\PsionDoom\PsionDoom.ini",FN

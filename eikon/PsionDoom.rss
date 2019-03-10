@@ -1,0 +1,142 @@
+//	PsionDoom.rss
+//
+// Copyright 17/02/2019 
+
+NAME PSIO
+
+#include <eikdef.rh>
+#include <eiktbar.rh>
+#include <eikmenu.rh>
+#include <eikctrls.hrh>
+#include <eikbutb.hrh>
+#include <eikspace.rh>
+#include <eikclock.rh>
+#include <eiklabel.rh>
+#include <eikdialg.rh>
+#include <eikon.rsg>
+
+#include "PsionDoom.hrh"
+
+#define ELLIPSIS 133
+
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+RESOURCE EIK_APP_INFO
+	{
+	menubar=r_psiondoom_menubar;
+	hotkeys=r_psiondoom_hotkeys;
+	toolbar=r_psiondoom_toolbar;
+	}
+
+RESOURCE TOOLBAR r_psiondoom_toolbar
+    {
+	breadth=KEikStdToolBarWidth;
+    controls=
+		{
+		TBAR_CTRL 
+			{ 
+			id=EPsionDoomCmdFileName;
+			type=EEikCtFileNameLabel; 
+			flags=EEikToolBarCtrlHasSetMinLength;
+			length=KEikStdFileNameLabelHeight;
+			},
+		TBAR_BUTTON
+			{
+			id=EStartGameCmd;
+			txt="Start";
+			flags=EEikToolBarCtrlHasSetMinLength;
+			length=KEikStdToolBarButtonHeight;
+			},
+		TBAR_BUTTON
+			{
+			id=EBenchmarkCmd;
+			txt="Benchmark";
+			flags=EEikToolBarCtrlHasSetMinLength;
+			length=KEikStdToolBarButtonHeight;
+			},
+		TBAR_BUTTON
+			{
+			id=EEikCmdExit;
+			txt="Close";
+			flags=EEikToolBarCtrlHasSetMinLength;
+			length=KEikStdToolBarButtonHeight;
+			},
+		TBAR_CTRL
+			{
+			type=EEikCtSpacer;
+			flags=EEikToolBarCtrlHasSetMinLength|EEikToolBarCtrlIsStretchable;
+			length=0;
+			control=SPACER;
+			},
+		TBAR_CTRL
+			{
+			type=EEikCtClock;
+			control=CLOCK { digitalresourceid=R_EIK_DIGITAL_CLOCK; analogresourceid=R_EIK_ANALOG_CLOCK; };
+			},
+		TBAR_CTRL
+			{
+			type=EEikCtSpacer;
+			flags=EEikToolBarCtrlHasSetMinLength;
+			length=KEikStdGapBelowClock;
+			control=SPACER;
+			}
+		};
+    }
+
+RESOURCE HOTKEYS r_psiondoom_hotkeys
+    {
+    control=
+        {
+        HOTKEY { command=EEikCmdExit; key='e'; }
+        };
+
+	shift_control=
+	    {
+		  HOTKEY { command=EEikCmdHelpAbout; key='a'; }
+		};
+
+    }
+
+RESOURCE MENU_BAR r_psiondoom_menubar
+    {
+    titles=
+        {
+          MENU_TITLE { menu_pane=r_psiondoom_file_menu; txt="File"; }
+		, MENU_TITLE { menu_pane=r_psiondoom_tools_menu; txt="Tools"; }
+		};
+    }
+
+RESOURCE MENU_PANE r_psiondoom_file_menu
+	{
+	items=
+		{
+		MENU_ITEM { command=EEikCmdExit; txt="Close"; }
+        };
+    }
+
+RESOURCE MENU_PANE r_psiondoom_tools_menu
+	{
+	items=
+		{
+		  MENU_ITEM { command=EEikCmdHelpAbout; txt="About PsionDoom"<ELLIPSIS>; }
+        };
+    }
+
+
+RESOURCE TBUF r_example_command_1 { buf="command 1"; }
+RESOURCE TBUF r_example_command_2 { buf="command 2"; }
+RESOURCE TBUF r_example_command_3 { buf="command 3"; }
+
+RESOURCE DIALOG r_psiondoom_about
+    { 
+	title="About PsionDoom";
+    buttons=R_EIK_BUTTONS_CONTINUE;
+	items=
+	    {
+		  DLG_LINE { type=EEikCtLabel; control=LABEL{txt="PsionDoom 1.0 is copyrighted material, ";};}
+		, DLG_LINE { type=EEikCtLabel; control=LABEL{txt="first published in 2019";};}
+		};
+	}
