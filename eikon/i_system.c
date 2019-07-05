@@ -55,12 +55,6 @@ static unsigned int displaytime;
 
 int ms_to_next_tick;
 
-
-void I_uSleep(unsigned long usecs)
-{
-	I_uSleep_e32(usecs);
-}
-
 /* CPhipps - believe it or not, it is possible with consecutive calls to 
  * gettimeofday to receive times out of order, e.g you query the time twice and 
  * the second time is earlier than the first. Cheap'n'cheerful fix here.

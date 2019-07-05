@@ -72,25 +72,16 @@ extern "C"
 //  the size of the 16bit, 2 hardware channel (stereo)
 //  mixing buffer, and the samplerate of the raw data.
 
-// Variables used by Boom from Allegro
-// created here to avoid changes to core Boom files
-int snd_card = 1;
-int mus_card = 1;
-int detect_voices = 0; // God knows
-
 static boolean sound_inited = false;
 static boolean first_sound_init = true;
 
 // Needed for calling the actual sound output.
-static int SAMPLECOUNT	= 1024;
+static unsigned int SAMPLECOUNT	= 1024;
 #define MAX_CHANNELS    8
 
 // MWM 2000-01-08: Sample rate in samples/second
 //int snd_samplerate=11025;
 int snd_samplerate=8000;
-
-// The actual output device.
-int audio_fd;
 
 
 #define MUSIC_BUFFER_SAMPLES 2048
@@ -108,23 +99,8 @@ static const unsigned int MUSIC_CHANNEL = MAX_CHANNELS;
 void flipSongBuffer();
 
 
-typedef struct
-{
-	unsigned int	lump_num;
-	unsigned char*	data_ptr;
-	unsigned int	len;
-} resampled_audio_info;
-
-static const unsigned int MAX_RESAMPLED_AUDIO_CACHE = NUMSFX;
-
-static resampled_audio_info* resampled_audio_cache[MAX_RESAMPLED_AUDIO_CACHE] = {NULL};
-
-
 typedef struct 
 {
-	// SFX id of the playing sound effect.
-	// Used to catch duplicates (like chainsaw).
-	int id;
 	// The channel step amount...
 	unsigned int step;
 	// ... and a 0.16 bit remainder of last step.
@@ -133,12 +109,6 @@ typedef struct
 	// The channel data pointers, start and end.
 	const unsigned char* data;
 	const unsigned char* enddata;
-	// Time/gametic that the channel started playing,
-	//  used to determine oldest, which automatically
-	//  has lowest priority.
-	// In case number of active sounds exceeds
-	//  available channels.
-	int starttime;
 	// Hardware left and right channel volume lookup.
 	int vol;
 
@@ -148,32 +118,9 @@ typedef struct
 
 channel_info_t channelinfo[MAX_CHANNELS + 1];
 
-
-
-//Find a previously stored resampled audio.
-unsigned char* findResampledAudioByLumpNum(unsigned int lumpNum, unsigned int& outLen)
+//Resample U8 PCM to new sample rate.
+unsigned char* resamplePcm(const unsigned char* inPcm, unsigned int inLen, unsigned short outFreq)
 {
-		for(unsigned int i = 0; i < MAX_RESAMPLED_AUDIO_CACHE; i++)
-	{
-		resampled_audio_info* info = resampled_audio_cache[i];
-		if(info && info->lump_num == lumpNum)
-		{
-			//Found it.
-			outLen = info->len;
-			return info->data_ptr;
-		}
-	}
-	
-	outLen = 0;
-	return NULL;
-}
-
-
-//Resample U8 PCM to new sample rate. Return cached if already converted.
-unsigned char* resamplePcm(unsigned int lumpNum, const unsigned char* inPcm, unsigned int inLen, unsigned short outFreq,  unsigned int& outLen)
-{
-	resampled_audio_info* info = new resampled_audio_info;
-
 	unsigned short inFreq = ((unsigned short*)inPcm)[1];
 
 	unsigned int inSamples = (inLen - 8);
@@ -181,43 +128,33 @@ unsigned char* resamplePcm(unsigned int lumpNum, const unsigned char* inPcm, uns
 	double ratio = (double)outFreq / (double)inFreq;
 	double step = ((double)inFreq / (double)outFreq);
 
-	unsigned int outSamples = (unsigned int)ceil(ratio * inSamples);
-	
-	info->len = (outSamples + 8);
-	info->lump_num = lumpNum;
-	info->data_ptr = (unsigned char*)Z_Malloc(info->len, PU_STATIC, 0);
+	unsigned short outSamples = (unsigned short)ceil(ratio * inSamples);
+	unsigned char* outData = (unsigned char*)Z_Malloc(outSamples + 8, PU_STATIC, 0);
 
-	((unsigned short*)info->data_ptr)[1] = outFreq;
+	//Header info. https://doomwiki.org/wiki/Sound
+	((unsigned short*)outData)[0] = 3; //Type. Must be 3.
+	((unsigned short*)outData)[1] = outFreq; //Freq.
+	((unsigned int*)outData)[1] = outSamples; //Sample count. Padding ignored.
 
 
-	fixed_t fStep = step * FRACUNIT;
+	fixed_t fStep = (fixed_t)(step * FRACUNIT);
 	fixed_t fPos = 0;
 
-	for(unsigned int i = 0; i < outSamples; i++)
+	unsigned int i = 0;
+
+	for(i = 0; i < outSamples; i++)
 	{
 		unsigned int srcPos = (fPos >> FRACBITS);
 
 		fPos += fStep;
 
-		//unsigned int srcPos = (unsigned int)floor((i * step) + 0.5);
-
 		if(srcPos >= inSamples)
 			srcPos = inSamples-1;
 
-		info->data_ptr[i+8] = inPcm[srcPos + 8];
+		outData[i+8] = inPcm[srcPos + 8];
 	}
 
-	for(i = 0; i < MAX_RESAMPLED_AUDIO_CACHE; i++)
-	{
-		if(!resampled_audio_cache[i])
-		{
-			resampled_audio_cache[i] = info;
-			break;
-		}
-	}
-
-	outLen = info->len;
-	return info->data_ptr;
+	return outData;
 }
 
 
@@ -228,10 +165,7 @@ unsigned char* resamplePcm(unsigned int lumpNum, const unsigned char* inPcm, uns
 
 static void stopchan(int i)
 {
-  if (channelinfo[i].data) /* cph - prevent excess unlocks */
-  {
-    channelinfo[i].data=NULL;
-  }
+	channelinfo[i].data=NULL;
 }
 
 //
@@ -241,7 +175,7 @@ static void stopchan(int i)
 //  (eight, usually) of internal channels.
 // Returns a handle.
 //
-static int addsfx(int sfxid, int channel, const unsigned char* data, size_t len)
+static int addsfx(int /*sfxid*/, int channel, const unsigned char* data, size_t len)
 {
 	stopchan(channel);
 	
@@ -252,17 +186,11 @@ static int addsfx(int sfxid, int channel, const unsigned char* data, size_t len)
 	channelinfo[channel].data += 8; /* Skip header */
 	
 	channelinfo[channel].stepremainder = 0;
-	// Should be gametic, I presume.
-	channelinfo[channel].starttime = gametic;
-	
-	// Preserve sound SFX id,
-	//  e.g. for avoiding duplicates of chainsaw.
-	channelinfo[channel].id = sfxid;
 	
 	return channel;
 }
 
-static void updateSoundParams(int slot, int volume, int seperation, int pitch)
+static void updateSoundParams(int slot, int volume, int /*seperation*/, int /*pitch*/)
 {
 
 #ifdef RANGECHECK
@@ -280,32 +208,8 @@ static void updateSoundParams(int slot, int volume, int seperation, int pitch)
     else
 		channelinfo[slot].step = ((channelinfo[slot].samplerate<<16)/snd_samplerate);
 
-    // Separation, that is, orientation/stereo.
-	//  range is: 1 - 256
-    //seperation += 1;
-
-    // Per left/right channel.
-    //  x^2 seperation,
-    //  adjust volume properly.
-    //leftvol = volume - ((volume*seperation*seperation) >> 16);
-    //seperation = seperation - 257;
-    //rightvol= volume - ((volume*seperation*seperation) >> 16);
-
     if (volume < 0 || volume > 127)
 		I_Error("volume out of bounds");
-
-
-    // Sanity check, clamp volume.
-    //if (rightvol < 0 || rightvol > 127)
-	//	I_Error("rightvol out of bounds");
-
-    //if (leftvol < 0 || leftvol > 127)
-	//	I_Error("leftvol out of bounds");
-
-    // Get the proper lookup table piece
-    // for this volume level???
-	//channelinfo[slot].leftvol_lookup = &vol_lookup[leftvol*256];
-	//channelinfo[slot].rightvol_lookup = &vol_lookup[rightvol*256];
 
 	channelinfo[slot].vol = volume;
 }
@@ -358,12 +262,8 @@ int I_GetSfxLumpNum(sfxinfo_t* sfx)
 // Pitching (that is, increased speed of playback)
 //  is set, but currently not used by mixing.
 //
-int I_StartSound(int id, int channel, int vol, int sep, int pitch, int priority)
+int I_StartSound(int id, int channel, int vol, int sep, int pitch, int /*priority*/)
 {
-	const unsigned char* data = NULL;
-	int lump;
-	unsigned int len = 0;
-
 	if ((channel < 0) || (channel >= MAX_CHANNELS))
 #ifdef RANGECHECK
 		I_Error("I_StartSound: handle out of range");
@@ -371,11 +271,9 @@ int I_StartSound(int id, int channel, int vol, int sep, int pitch, int priority)
 		return -1;
 #endif
 
-	lump = S_sfx[id].lumpnum;
+	int lump = S_sfx[id].lumpnum;
 
-	data = findResampledAudioByLumpNum(lump, len);
-
-	if(!data)
+	if(!S_sfx[id].data)
 	{
 		// We will handle the new SFX.
 		// Set pointer to raw data.
@@ -394,11 +292,15 @@ int I_StartSound(int id, int channel, int vol, int sep, int pitch, int priority)
 		// not in a memory mapped one
 		const unsigned char* wadData = (const unsigned char*)W_CacheLumpNum(lump);
 
-		data = (const unsigned char*)resamplePcm(lump, wadData, lumpLen, 8000, len);
+		S_sfx[id].data = resamplePcm(wadData, lumpLen, (unsigned short)snd_samplerate);
 	}
 
+
+	const unsigned char* data = (const unsigned char*)S_sfx[id].data;
+	const unsigned int len = ((unsigned int*)data)[1]; //No of samples is here.
+
 	// Returns a handle (not used).
-	addsfx(id, channel, data, len-8);
+	addsfx(id, channel, data, len);
 	updateSoundParams(channel, vol, sep, pitch);
 
 	return channel;
@@ -433,7 +335,7 @@ boolean I_AnySoundStillPlaying(void)
 	int i;
 	
 	for (i=0; i<MAX_CHANNELS; i++)
-		result |= channelinfo[i].data != NULL;
+		result |= (channelinfo[i].data != NULL);
 
 	return result;
 }
@@ -451,97 +353,65 @@ boolean I_AnySoundStillPlaying(void)
 // This function currently supports only 16bit.
 //
 
-static void I_UpdateSound(void *unused, unsigned char *stream, int len)
+static void I_UpdateSound(unsigned char *stream, const int len)
 {
-	// Mix current sound data.
-	register unsigned char sample;
-	register int    dl;
+	signed short* streamStart = (signed short*)stream;
+	signed short* streamEnd = (signed short*)(&stream[len]);
+	signed short* streamPos = streamStart;
 
-	// Pointers in audio stream, left, right, end.
-	signed short*   leftout;
-	signed short*   leftend;
-	// Step in stream, left and right, thus two.
-	int       step;
+	if(len <= 0)
+		return;
 
-	// Mixing channel index.
-	int       chan;
-
-    // Left and right channel
-    //  are in audio stream, alternating.
-    leftout = (signed short *)stream;
-
-    // Determine end, for left channel only
-    //  (right channel is implicit).
-    leftend = leftout + (len >> 1);
-
-    // Mix sounds into the mixing buffer.
-    // Loop over step*SAMPLECOUNT,
-    //  that is 512 values for two channels.
-    while (leftout != leftend)
+	do
     {
 		// Reset left/right value.
-		dl = 0;
-		//dr = 0;
-		//dl = *leftout;
-		//dr = *rightout;
+		int outSample = 0;
+
 
 		// Love thy L2 chache - made this a loop.
 		// Now more channels could be set at compile time
 		//  as well. Thus loop those  channels.
-		for ( chan = 0; chan < (MAX_CHANNELS); chan++ )
+		for (int chan = 0; chan < numChannels; chan++ )
 		{
-			// Check channel, if active.
-			if (channelinfo[chan].data)
-			{
-				// Get the raw data from the channel.
-				// no filtering
-				sample = *channelinfo[chan].data;
-				// linear filtering
-				//sample = (((unsigned int)channelinfo[chan].data[0] * (0x10000 - channelinfo[chan].stepremainder))
-				//	+ ((unsigned int)channelinfo[chan].data[1] * (channelinfo[chan].stepremainder))) >> 16;
+			channel_info_t* channel = &channelinfo[chan];
 
-				//dl += channelinfo[chan].vol_lookup[sample];
-				int volume = channelinfo[chan].vol;
+			if(channel->data == NULL)
+				continue;
 
-				int scaledSample = ((sample - 127) * volume);
-				scaledSample += (scaledSample >> 1);
+			int inSample32 = *channelinfo[chan].data;
+
+			unsigned int volume = channel->vol;
+
+			inSample32 = ((inSample32 - 127) * volume);
+			
+			inSample32 += (inSample32 >> 1);
 				
-				dl += scaledSample;
-				
+			outSample += inSample32;
 
-				// Increment index ???
-				channelinfo[chan].stepremainder += channelinfo[chan].step;
-				// MSB is next sample???
-				channelinfo[chan].data += channelinfo[chan].stepremainder >> 16;
-				// Limit to LSB???
-				channelinfo[chan].stepremainder &= 0xffff;
+			channel->stepremainder += channel->step;
+			channel->data += channel->stepremainder >> 16;
+			channel->stepremainder &= 0xffff;
 
-				// Check whether we are done.
-				if (channelinfo[chan].data >= channelinfo[chan].enddata)
-				{
-					stopchan(chan);
-				}					
-			}
+			// Check whether we are done.
+			if (channel->data >= channel->enddata)
+				stopchan(chan);
 		}
 
 		// Check channel, if active.
-		if (channelinfo[MUSIC_CHANNEL].data)
+
+		channel_info_t* channel = &channelinfo[MUSIC_CHANNEL];
+
+		if(channel->data)
 		{
-			// Get the raw data from the channel.
-			short sample2 = *((short*)channelinfo[MUSIC_CHANNEL].data);
+			outSample += *((short*)channel->data);
 
-			dl += sample2;
+			channel->stepremainder += channel->step;
+			channel->data += channel->stepremainder >> 15;
+			channel->stepremainder &= 0x7fff;
 
-
-			// Increment index ???
-			channelinfo[MUSIC_CHANNEL].stepremainder += (channelinfo[MUSIC_CHANNEL].step);
-			// MSB is next sample???
-			channelinfo[MUSIC_CHANNEL].data += (channelinfo[MUSIC_CHANNEL].stepremainder >> 15);
-			// Limit to LSB???
-			channelinfo[MUSIC_CHANNEL].stepremainder &= 0xffff;
 
 			// Check whether we are done.
-			if (channelinfo[MUSIC_CHANNEL].data >= channelinfo[MUSIC_CHANNEL].enddata)
+			if (channel->data >= channel->enddata)
 			{
 				stopchan(MUSIC_CHANNEL);
 
@@ -550,15 +420,14 @@ static void I_UpdateSound(void *unused, unsigned char *stream, int len)
 		}
 
 
-		if (dl > SHRT_MAX)
-			*leftout = SHRT_MAX;
-		else if (dl < SHRT_MIN)
-			*leftout = SHRT_MIN;
-		else
-			*leftout = (signed short)dl;
+		if (outSample > SHRT_MAX)
+			outSample = SHRT_MAX;
+		else if (outSample < SHRT_MIN)
+			outSample = SHRT_MIN;
 
-		leftout++;
-	}
+		*streamPos = (signed short)outSample;
+
+	} while (++streamPos < streamEnd);
 }
 
 void I_ShutdownSound(void)
@@ -577,7 +446,7 @@ void I_InitSound(void)
 {
 	I_SetChannels();
 
-	SDL_AudioSpec* audio = new SDL_AudioSpec;
+	AudioSpec* audio = new AudioSpec;
 
 	// Secure and configure sound device first.
 	lprintf(LO_INFO,"I_InitSound: ");
@@ -585,13 +454,11 @@ void I_InitSound(void)
 	// Open the audio device
 	audio->freq = snd_samplerate;
 
-	audio->format = 0;
-
 	audio->channels = 1;
-	audio->samples = SAMPLECOUNT;
+	audio->samples = (unsigned short)SAMPLECOUNT;
 	audio->callback = I_UpdateSound;
 	
-	if ( SDL_OpenAudio(audio, NULL) < 0 )
+	if ( OpenAudio(audio) < 0 )
 	{
 		lprintf(LO_INFO,"couldn't open audio with desired format\n");
 		return;
@@ -665,10 +532,7 @@ void playSongBuffer(unsigned int buffNum)
 	channelinfo[MUSIC_CHANNEL].samplerate = snd_samplerate;
 	
 	channelinfo[MUSIC_CHANNEL].stepremainder = 0;
-	channelinfo[MUSIC_CHANNEL].starttime = gametic;
 	
-	channelinfo[MUSIC_CHANNEL].id = 0;
-
 	channelinfo[MUSIC_CHANNEL].step = ((snd_samplerate<<16)/snd_samplerate);
 
 	channelinfo[MUSIC_CHANNEL].vol = 0;
@@ -715,7 +579,7 @@ void I_UpdateMusic()
 	}
 }
 
-void I_PlaySong(int handle, int looping)
+void I_PlaySong(int /*handle*/, int looping)
 {
 	if(!midiSong || !music_init)
 		return;
@@ -732,17 +596,17 @@ void I_PlaySong(int handle, int looping)
 
 //extern int mus_pause_opt; // From m_misc.c
 
-void I_PauseSong (int handle)
+void I_PauseSong (int /*handle*/)
 {
 	stopchan(MUSIC_CHANNEL);
 }
 
-void I_ResumeSong (int handle)
+void I_ResumeSong (int /*handle*/)
 {
 	playSongBuffer(current_music_buffer);
 }
 
-void I_StopSong(int handle)
+void I_StopSong(int /*handle*/)
 {
 	if(midiSong)
 	{
@@ -752,7 +616,7 @@ void I_StopSong(int handle)
 	stopchan(MUSIC_CHANNEL);
 }
 
-void I_UnRegisterSong(int handle)
+void I_UnRegisterSong(int /*handle*/)
 {
 	I_StopSong(0);
 	

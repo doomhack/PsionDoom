@@ -454,7 +454,7 @@ static void R_RenderSegLoop (void)
 
 // killough 5/2/98: move from r_main.c, made static, simplified
 
-static fixed_t R_PointToDist(fixed_t x, fixed_t y)
+static CONSTFUNC fixed_t R_PointToDist(fixed_t x, fixed_t y)
 {
   fixed_t dx = D_abs(x - viewx);
   fixed_t dy = D_abs(y - viewy);

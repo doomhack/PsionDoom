@@ -87,7 +87,7 @@ typedef enum
 
 static int    temp_x = 0;
 static int    tempyl[4], tempyh[4];
-static byte           byte_tempbuf[MAX_SCREENHEIGHT * 4];
+static byte   byte_tempbuf[MAX_SCREENHEIGHT * 4];
 static int    startx = 0;
 static int    temptype = COL_NONE;
 static int    commontop, commonbot;
@@ -120,15 +120,15 @@ static int fuzzpos = 0;
 
 // render pipelines
 #define RDC_STANDARD      1
-#define RDC_TRANSLUCENT   2
+//#define RDC_TRANSLUCENT   2
 #define RDC_TRANSLATED    4
 #define RDC_FUZZ          8
 // no color mapping
 #define RDC_NOCOLMAP     16
 // filter modes
-#define RDC_DITHERZ      32
-#define RDC_BILINEAR     64
-#define RDC_ROUNDED     128
+//#define RDC_DITHERZ      32
+//#define RDC_BILINEAR     64
+//#define RDC_ROUNDED     128
 
 draw_vars_t drawvars = { 
   NULL, // byte_topleft
@@ -208,13 +208,6 @@ void R_ResetColumnBuffer(void)
 #define R_FLUSHQUAD_FUNCNAME R_FlushQuad8
 #include "r_drawflush.inl"
 
-#define R_DRAWCOLUMN_PIPELINE RDC_TRANSLUCENT
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWholeTL8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHTTL8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuadTL8
-#include "r_drawflush.inl"
-
 #define R_DRAWCOLUMN_PIPELINE RDC_FUZZ
 #define R_DRAWCOLUMN_PIPELINE_BITS 8
 #define R_FLUSHWHOLE_FUNCNAME R_FlushWholeFuzz8
@@ -246,31 +239,6 @@ byte *translationtables;
 #define R_FLUSHQUAD_FUNCNAME R_FlushQuad8
 #include "r_drawcolpipeline.inl"
 
-
-#undef R_DRAWCOLUMN_PIPELINE_BASE
-#undef R_DRAWCOLUMN_PIPELINE_TYPE
-
-// Here is the version of R_DrawColumn that deals with translucent  // phares
-// textures and sprites. It's identical to R_DrawColumn except      //    |
-// for the spot where the color index is stuffed into *dest. At     //    V
-// that point, the existing color index and the new color index
-// are mapped through the TRANMAP lump filters to get a new color
-// index whose RGB values are the average of the existing and new
-// colors.
-//
-// Since we're concerned about performance, the 'translucent or
-// opaque' decision is made outside this routine, not down where the
-// actual code differences are.
-
-#define R_DRAWCOLUMN_PIPELINE_TYPE RDC_PIPELINE_TRANSLUCENT
-#define R_DRAWCOLUMN_PIPELINE_BASE RDC_TRANSLUCENT
-
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_DRAWCOLUMN_FUNCNAME_COMPOSITE(postfix) R_DrawTLColumn8 ## postfix
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWholeTL8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHTTL8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuadTL8
-#include "r_drawcolpipeline.inl"
 
 #undef R_DRAWCOLUMN_PIPELINE_BASE
 #undef R_DRAWCOLUMN_PIPELINE_TYPE
@@ -325,47 +293,32 @@ static R_DrawColumn_f drawcolumnfuncs[VID_MODEMAX][RDRAW_FILTER_MAXFILTERS][RDRA
     {
       {NULL, NULL, NULL, NULL,},
       {R_DrawColumn8_PointUV,
-       R_DrawTLColumn8_PointUV,
+       NULL,
        R_DrawTranslatedColumn8_PointUV,
        R_DrawFuzzColumn8_PointUV,},
-      {R_DrawColumn8_LinearUV,
-       R_DrawTLColumn8_LinearUV,
-       R_DrawTranslatedColumn8_LinearUV,
-       R_DrawFuzzColumn8_LinearUV,},
-      {R_DrawColumn8_RoundedUV,
-       R_DrawTLColumn8_RoundedUV,
-       R_DrawTranslatedColumn8_RoundedUV,
-       R_DrawFuzzColumn8_RoundedUV,},
+      {NULL,
+       NULL,
+       NULL,
+       NULL,},
+      {NULL,
+       NULL,
+       NULL,
+       NULL,},
     },
     {
       {NULL, NULL, NULL, NULL,},
       {R_DrawColumn8_PointUV_PointZ,
-       R_DrawTLColumn8_PointUV_PointZ,
+       NULL,
        R_DrawTranslatedColumn8_PointUV_PointZ,
        R_DrawFuzzColumn8_PointUV_PointZ,},
-      {R_DrawColumn8_LinearUV_PointZ,
-       R_DrawTLColumn8_LinearUV_PointZ,
-       R_DrawTranslatedColumn8_LinearUV_PointZ,
-       R_DrawFuzzColumn8_LinearUV_PointZ,},
-      {R_DrawColumn8_RoundedUV_PointZ,
-       R_DrawTLColumn8_RoundedUV_PointZ,
-       R_DrawTranslatedColumn8_RoundedUV_PointZ,
-       R_DrawFuzzColumn8_RoundedUV_PointZ,},
-    },
-    {
-      {NULL, NULL, NULL, NULL,},
-      {R_DrawColumn8_PointUV_LinearZ,
-       R_DrawTLColumn8_PointUV_LinearZ,
-       R_DrawTranslatedColumn8_PointUV_LinearZ,
-       R_DrawFuzzColumn8_PointUV_LinearZ,},
-      {R_DrawColumn8_LinearUV_LinearZ,
-       R_DrawTLColumn8_LinearUV_LinearZ,
-       R_DrawTranslatedColumn8_LinearUV_LinearZ,
-       R_DrawFuzzColumn8_LinearUV_LinearZ,},
-      {R_DrawColumn8_RoundedUV_LinearZ,
-       R_DrawTLColumn8_RoundedUV_LinearZ,
-       R_DrawTranslatedColumn8_RoundedUV_LinearZ,
-       R_DrawFuzzColumn8_RoundedUV_LinearZ,},
+      {NULL,
+       NULL,
+       NULL,
+       NULL,},
+      {NULL,
+       NULL,
+       NULL,
+       NULL,},
     },
   },
 };
@@ -450,77 +403,40 @@ void R_InitTranslationTables (void)
 // In consequence, flats are not stored by column (like walls),
 //  and the inner loop has to step in texture space u and v.
 //
-
-#define R_DRAWSPAN_FUNCNAME R_DrawSpan8_PointUV_PointZ
-#define R_DRAWSPAN_PIPELINE_BITS 8
-#define R_DRAWSPAN_PIPELINE (RDC_STANDARD)
-#include "r_drawspan.inl"
-
-#define R_DRAWSPAN_FUNCNAME R_DrawSpan8_PointUV_LinearZ
-#define R_DRAWSPAN_PIPELINE_BITS 8
-#define R_DRAWSPAN_PIPELINE (RDC_STANDARD | RDC_DITHERZ)
-#include "r_drawspan.inl"
-
-#define R_DRAWSPAN_FUNCNAME R_DrawSpan8_LinearUV_PointZ
-#define R_DRAWSPAN_PIPELINE_BITS 8
-#define R_DRAWSPAN_PIPELINE (RDC_STANDARD | RDC_BILINEAR)
-#include "r_drawspan.inl"
-
-#define R_DRAWSPAN_FUNCNAME R_DrawSpan8_LinearUV_LinearZ
-#define R_DRAWSPAN_PIPELINE_BITS 8
-#define R_DRAWSPAN_PIPELINE (RDC_STANDARD | RDC_BILINEAR | RDC_DITHERZ)
-#include "r_drawspan.inl"
-
-#define R_DRAWSPAN_FUNCNAME R_DrawSpan8_RoundedUV_PointZ
-#define R_DRAWSPAN_PIPELINE_BITS 8
-#define R_DRAWSPAN_PIPELINE (RDC_STANDARD | RDC_ROUNDED)
-#include "r_drawspan.inl"
-
-#define R_DRAWSPAN_FUNCNAME R_DrawSpan8_RoundedUV_LinearZ
-#define R_DRAWSPAN_PIPELINE_BITS 8
-#define R_DRAWSPAN_PIPELINE (RDC_STANDARD | RDC_ROUNDED | RDC_DITHERZ)
-#include "r_drawspan.inl"
-
-static R_DrawSpan_f drawspanfuncs[VID_MODEMAX][RDRAW_FILTER_MAXFILTERS][RDRAW_FILTER_MAXFILTERS] = {
-  {
-    {
-      NULL,
-      NULL,
-      NULL,
-      NULL,
-    },
-    {
-      NULL,
-      R_DrawSpan8_PointUV_PointZ,
-      R_DrawSpan8_LinearUV_PointZ,
-      R_DrawSpan8_RoundedUV_PointZ,
-    },
-    {
-      NULL,
-      R_DrawSpan8_PointUV_LinearZ,
-      R_DrawSpan8_LinearUV_LinearZ,
-      R_DrawSpan8_RoundedUV_LinearZ,
-    },
-    {
-      NULL,
-      NULL,
-      NULL,
-      NULL,
-    },
-  },
-};
-
-R_DrawSpan_f R_GetDrawSpanFunc(enum draw_filter_type_e filter,
-                               enum draw_filter_type_e filterz) {
-  R_DrawSpan_f result = drawspanfuncs[V_GetMode()][filterz][filter];
-  if (result == NULL)
-    I_Error("R_GetDrawSpanFunc: undefined function (%d, %d)",
-            filter, filterz);
-  return result;
+void R_DrawSpan(draw_span_vars_t *dsvars)
+{
+	unsigned count = dsvars->x2 - dsvars->x1 + 1;
+	fixed_t xfrac = dsvars->xfrac;
+	fixed_t yfrac = dsvars->yfrac;
+	const fixed_t xstep = dsvars->xstep;
+	const fixed_t ystep = dsvars->ystep;
+	const byte *source = dsvars->source;
+	const byte *colormap = dsvars->colormap;
+	byte* dest = drawvars.byte_topleft + dsvars->y*drawvars.byte_pitch + dsvars->x1;
+	
+	while (count) 
+	{
+		const fixed_t xtemp = (xfrac >> 16) & 63;
+		const fixed_t ytemp = (yfrac >> 10) & 4032;
+		const fixed_t spot = xtemp | ytemp;
+		xfrac += xstep;
+		yfrac += ystep;
+		*dest++ = colormap[source[spot]];
+		count--;
+	}
 }
 
-void R_DrawSpan(draw_span_vars_t *dsvars) {
-  R_GetDrawSpanFunc(drawvars.filterfloor, drawvars.filterz)(dsvars);
+void R_DrawSpanPlain(draw_span_vars_t *dsvars)
+{
+	const unsigned count = dsvars->x2 - dsvars->x1 + 1;
+
+	const byte *source = dsvars->source;
+	const byte *colormap = dsvars->colormap;
+	const byte* dest = drawvars.byte_topleft + dsvars->y*drawvars.byte_pitch + dsvars->x1;
+	
+	const byte pxl = colormap[source[0]];
+
+	memset(dest, pxl, count);
 }
 
 //

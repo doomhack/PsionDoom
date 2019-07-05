@@ -6,13 +6,13 @@
 --------------------Configuration: PSIONDOOM - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1AF.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP688.tmp" with contents
 [
 /nologo /Zp4 /MDd /W4 /ZI /Od /X /I "\PSIONDOOM\EIKON" /I "\PSIONDOOM\EIKON\LIBTIMIDITY" /I "\EPOC32\INCLUDE" /I "\EPOC32\INCLUDE\LIBC" /D "__SYMBIAN32__" /D "__PSISOFT32__" /D "__VC32__" /D "__WINS__" /D "__DLL__" /D "_DEBUG" /FR"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /Fo"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /Fd"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /FD /c 
 "C:\PSIONDOOM\EIKON\R_draw.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1AF.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B0.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP688.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP689.tmp" with contents
 [
 \EPOC32\RELEASE\WINS\DEB\EDLL.OBJ \EPOC32\RELEASE\WINS\DEB\euser.lib \EPOC32\RELEASE\WINS\DEB\fbscli.lib \EPOC32\RELEASE\WINS\DEB\ws32.lib \EPOC32\RELEASE\WINS\DEB\estlib.lib msvcrt.lib /nologo /entry:"_E32Dll" /subsystem:windows /dll /incremental:yes /pdb:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.pdb" /debug /machine:IX86 /nodefaultlib /out:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.dll" /implib:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.lib" /WARN:3 
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Am_map.obj
@@ -102,127 +102,31 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B0.tmp" with c
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_bmalloc.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_zone.obj
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B0.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP689.tmp"
 <h3>Output Window</h3>
 Compiling...
 R_draw.c
-c:\psiondoom\eikon\r_drawflush.inl(212) : warning C4127: conditional expression is constant
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(216) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(278) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(227) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(214) : warning C4189: 'source' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(219) : warning C4189: 'x' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(223) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawcolumn.inl(215) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_draw.c(419) : warning C4244: 'initializing' : conversion from 'int ' to 'unsigned char ', possible loss of data
-c:\psiondoom\eikon\r_draw.c(424) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
-c:\psiondoom\eikon\r_draw.c(438) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
-c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawspan.inl(75) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawspan.inl(75) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawspan.inl(83) : warning C4204: nonstandard extension used : non-constant aggregate initializer
-c:\psiondoom\eikon\r_drawspan.inl(75) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_draw.c(650) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
-        c:\psiondoom\eikon\m_fixed.h(69) : see declaration of 'FixedMul'
-c:\psiondoom\eikon\r_draw.c(650) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
-        c:\psiondoom\eikon\m_fixed.h(82) : see declaration of 'FixedDiv'
-c:\psiondoom\eikon\r_draw.c(650) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
-        c:\psiondoom\eikon\m_fixed.h(93) : see declaration of 'FixedMod'
+c:\psiondoom\eikon\r_drawcolumn.inl(148) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(147) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(148) : warning C4189: 'translation' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(147) : warning C4189: 'colormap' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
+c:\psiondoom\eikon\r_draw.c(372) : warning C4244: 'initializing' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(377) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(391) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(439) : warning C4090: 'function' : different 'const' qualifiers
+c:\psiondoom\eikon\r_draw.c(439) : warning C4022: 'memset' : pointer mismatch for actual parameter 1
+c:\psiondoom\eikon\r_draw.c(566) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\r_draw.c(566) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\r_draw.c(566) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
 Linking...
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B1.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP68A.tmp" with contents
 [
 /nologo /o"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.bsc" 
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Am_map.sbr
@@ -311,14 +215,14 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B1.tmp" with c
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Wi_stuff.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_bmalloc.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_zone.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP1B1.tmp"
+Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP68A.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 
 
 
 <h3>Results</h3>
-PSIONDOOM.dll - 0 error(s), 112 warning(s)
+PSIONDOOM.dll - 0 error(s), 16 warning(s)
 </pre>
 </body>
 </html>

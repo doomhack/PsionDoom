@@ -274,10 +274,6 @@ default_t defaults[] =
   {"comp_maskedanim",{&default_comp[comp_maskedanim]},{0},0,1,def_bool,ss_comp,&comp[comp_maskedanim]},
 
   {"Sound settings",{NULL},{0},UL,UL,def_none,ss_none},
-  {"sound_card",{&snd_card},{-1},-1,7,       // jff 1/18/98 allow Allegro drivers
-   def_int,ss_none}, // select sounds driver (DOS), -1 is autodetect, 0 is none; in Linux, non-zero enables sound
-  {"music_card",{&mus_card},{-1},-1,9,       //  to be set,  -1 = autodetect
-   def_int,ss_none}, // select music driver (DOS), -1 is autodetect, 0 is none"; in Linux, non-zero enables music
   {"pitched_sounds",{&pitched_sounds},{0},0,1, // killough 2/21/98
    def_bool,ss_none}, // enables variable pitch in sound effects (from id's original code)
   {"samplerate",{&snd_samplerate},{8000},8000, def_int,ss_none},
@@ -285,7 +281,7 @@ default_t defaults[] =
   {"music_volume",{&snd_MusicVolume},{8},0,15, def_int,ss_none},
   {"mus_pause_opt",{&mus_pause_opt},{2},0,2, // CPhipps - music pausing
    def_int, ss_none}, // 0 = kill music when paused, 1 = pause music, 2 = let music continue
-  {"snd_channels",{&default_numChannels},{8},1,32,
+  {"snd_channels",{&default_numChannels},{8},1,8,
    def_int,ss_none}, // number of audio events simultaneously // killough
 
   {"Video settings",{NULL},{0},UL,UL,def_none,ss_none},
@@ -887,20 +883,6 @@ void M_LoadDefaults (void)
     defaultfile = myargv[i+1];
   else 
   {
-
-	  /*
-	  const char* exedir = I_DoomExeDir();
-    defaultfile = malloc(PATH_MAX+1);
-#ifdef HAVE_SNPRINTF
-    snprintf((char *)defaultfile, PATH_MAX,
-#else
-    sprintf ((char *)defaultfile,
-#endif
-            "%s%s%sboom.cfg", exedir, HasTrailingSlash(exedir) ? "" : "/", 
-
-            "pr");
-			*/
-
 	  defaultfile = "D:\\Doom\\config.cfg";
   }
 

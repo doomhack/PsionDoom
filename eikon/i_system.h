@@ -49,8 +49,6 @@ void I_GetTime_SaveMS(void);
 
 unsigned long I_GetRandomTimeSeed(void); /* cphipps */
 
-void I_uSleep(unsigned long usecs);
-
 /* cphipps - I_GetVersionString
  * Returns a version string in the given buffer
  */

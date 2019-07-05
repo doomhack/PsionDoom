@@ -160,11 +160,6 @@ static void R_MapPlane(int y, int x1, int x2, draw_span_vars_t *dsvars)
   dsvars->xfrac =  viewx + FixedMul(finecosine[angle], length) + xoffs;
   dsvars->yfrac = -viewy - FixedMul(finesine[angle],   length) + yoffs;
 
-  if (drawvars.filterfloor == RDRAW_FILTER_LINEAR) {
-    dsvars->xfrac -= (FRACUNIT>>1);
-    dsvars->yfrac -= (FRACUNIT>>1);
-  }
-
   if (!(dsvars->colormap = fixedcolormap))
     {
       dsvars->z = distance;
@@ -183,7 +178,14 @@ static void R_MapPlane(int y, int x1, int x2, draw_span_vars_t *dsvars)
   dsvars->x1 = x1;
   dsvars->x2 = x2;
 
-  R_DrawSpan(dsvars);
+	if(y < (SCREENHEIGHT >> 1))
+	{
+		R_DrawSpanPlain(dsvars);
+	}
+	else
+	{
+		R_DrawSpan(dsvars);
+	}
 }
 
 //
@@ -323,133 +325,145 @@ static void R_MakeSpans(int x, unsigned int t1, unsigned int b1,
                         unsigned int t2, unsigned int b2,
                         draw_span_vars_t *dsvars)
 {
-  for (; t1 < t2 && t1 <= b1; t1++)
-    R_MapPlane(t1, spanstart[t1], x-1, dsvars);
-  for (; b1 > b2 && b1 >= t1; b1--)
-    R_MapPlane(b1, spanstart[b1] ,x-1, dsvars);
-  while (t2 < t1 && t2 <= b2)
-    spanstart[t2++] = x;
-  while (b2 > b1 && b2 >= t2)
-    spanstart[b2--] = x;
+	for (; t1 < t2 && t1 <= b1; t1++)
+		R_MapPlane(t1, spanstart[t1], x-1, dsvars);
+	
+	for (; b1 > b2 && b1 >= t1; b1--)
+		R_MapPlane(b1, spanstart[b1] ,x-1, dsvars);
+	
+	while (t2 < t1 && t2 <= b2)
+		spanstart[t2++] = x;
+	
+	while (b2 > b1 && b2 >= t2)
+		spanstart[b2--] = x;
 }
 
 // New function, by Lee Killough
 
 static void R_DoDrawPlane(visplane_t *pl)
 {
-  register int x;
-  draw_column_vars_t dcvars;
-  R_DrawColumn_f colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_STANDARD, drawvars.filterwall, drawvars.filterz);
+	register int x;
+	draw_column_vars_t dcvars;
+	
+	R_DrawColumn_f colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_STANDARD, drawvars.filterwall, drawvars.filterz);
 
-  R_SetDefaultDrawColumnVars(&dcvars);
+	R_SetDefaultDrawColumnVars(&dcvars);
 
-  if (pl->minx <= pl->maxx) {
-    if (pl->picnum == skyflatnum || pl->picnum & PL_SKYFLAT) { // sky flat
-      int texture;
-      const rpatch_t *tex_patch;
-      angle_t an, flip;
+	if (pl->minx <= pl->maxx)
+	{
+		if (pl->picnum == skyflatnum || pl->picnum & PL_SKYFLAT)
+		{ // sky flat
+			int texture;
+			const rpatch_t *tex_patch;
+			angle_t an, flip;
 
-      // killough 10/98: allow skies to come from sidedefs.
-      // Allows scrolling and/or animated skies, as well as
-      // arbitrary multiple skies per level without having
-      // to use info lumps.
+			// killough 10/98: allow skies to come from sidedefs.
+			// Allows scrolling and/or animated skies, as well as
+			// arbitrary multiple skies per level without having
+			// to use info lumps.
 
-      an = viewangle;
+			an = viewangle;
 
-      if (pl->picnum & PL_SKYFLAT)
-      {
-        // Sky Linedef
-        const line_t *l = &lines[pl->picnum & ~PL_SKYFLAT];
+			if (pl->picnum & PL_SKYFLAT)
+			{
+				// Sky Linedef
+				const line_t *l = &lines[pl->picnum & ~PL_SKYFLAT];
 
-        // Sky transferred from first sidedef
-        const side_t *s = *l->sidenum + sides;
+				// Sky transferred from first sidedef
+				const side_t *s = *l->sidenum + sides;
+				
+				// Texture comes from upper texture of reference sidedef
+				texture = texturetranslation[s->toptexture];
 
-        // Texture comes from upper texture of reference sidedef
-        texture = texturetranslation[s->toptexture];
+				// Horizontal offset is turned into an angle offset,
+				// to allow sky rotation as well as careful positioning.
+				// However, the offset is scaled very small, so that it
+				// allows a long-period of sky rotation.
 
-        // Horizontal offset is turned into an angle offset,
-        // to allow sky rotation as well as careful positioning.
-        // However, the offset is scaled very small, so that it
-        // allows a long-period of sky rotation.
+		        an += s->textureoffset;
 
-        an += s->textureoffset;
+				// Vertical offset allows careful sky positioning.
 
-        // Vertical offset allows careful sky positioning.
+				dcvars.texturemid = s->rowoffset - 28*FRACUNIT;
 
-        dcvars.texturemid = s->rowoffset - 28*FRACUNIT;
+				// We sometimes flip the picture horizontally.
+				//
+				// Doom always flipped the picture, so we make it optional,
+				// to make it easier to use the new feature, while to still
+				// allow old sky textures to be used.
 
-        // We sometimes flip the picture horizontally.
-        //
-        // Doom always flipped the picture, so we make it optional,
-        // to make it easier to use the new feature, while to still
-        // allow old sky textures to be used.
+				flip = l->special==272 ? 0u : ~0u;
+			}
+			else
+			{    // Normal Doom sky, only one allowed per level
+				dcvars.texturemid = skytexturemid;    // Default y-offset
+				texture = skytexture;             // Default texture
+				flip = 0;                         // Doom flips it
+			}
 
-        flip = l->special==272 ? 0u : ~0u;
-      }
-      else
-      {    // Normal Doom sky, only one allowed per level
-        dcvars.texturemid = skytexturemid;    // Default y-offset
-        texture = skytexture;             // Default texture
-        flip = 0;                         // Doom flips it
-      }
+		  /* Sky is always drawn full bright, i.e. colormaps[0] is used.
+		   * Because of this hack, sky is not affected by INVUL inverse mapping.
+		   * Until Boom fixed this. Compat option added in MBF. */
+			
+			if (comp[comp_skymap] || !(dcvars.colormap = fixedcolormap))
+				dcvars.colormap = fullcolormap;          // killough 3/20/98
+			
+			dcvars.nextcolormap = dcvars.colormap; // for filtering -- POPE
+			
+			//dcvars.texturemid = skytexturemid;
+			dcvars.texheight = textureheight[skytexture]>>FRACBITS; // killough
+			
+			// proff 09/21/98: Changed for high-res
+			dcvars.iscale = FRACUNIT*200/viewheight;
 
-      /* Sky is always drawn full bright, i.e. colormaps[0] is used.
-       * Because of this hack, sky is not affected by INVUL inverse mapping.
-       * Until Boom fixed this. Compat option added in MBF. */
-
-      if (comp[comp_skymap] || !(dcvars.colormap = fixedcolormap))
-        dcvars.colormap = fullcolormap;          // killough 3/20/98
-
-      dcvars.nextcolormap = dcvars.colormap; // for filtering -- POPE
-
-      //dcvars.texturemid = skytexturemid;
-      dcvars.texheight = textureheight[skytexture]>>FRACBITS; // killough
-      // proff 09/21/98: Changed for high-res
-      dcvars.iscale = FRACUNIT*200/viewheight;
-
-      tex_patch = R_CacheTextureCompositePatchNum(texture);
-
-  // killough 10/98: Use sky scrolling offset, and possibly flip picture
-        for (x = pl->minx; (dcvars.x = x) <= pl->maxx; x++)
-          if ((dcvars.yl = pl->top[x]) != -1 && dcvars.yl <= (dcvars.yh = pl->bottom[x])) // dropoff overflow
-            {
-              dcvars.source = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x])^flip) >> ANGLETOSKYSHIFT);
-              dcvars.prevsource = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x-1])^flip) >> ANGLETOSKYSHIFT);
-              dcvars.nextsource = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x+1])^flip) >> ANGLETOSKYSHIFT);
-              colfunc(&dcvars);
-            }
-
-      R_UnlockTextureCompositePatchNum(texture);
-
-    } else {     // regular flat
-
-      int stop, light;
-      draw_span_vars_t dsvars;
-
-      dsvars.source = W_CacheLumpNum(firstflat + flattranslation[pl->picnum]);
-
-      xoffs = pl->xoffs;  // killough 2/28/98: Add offsets
-      yoffs = pl->yoffs;
-      planeheight = D_abs(pl->height-viewz);
-      light = (pl->lightlevel >> LIGHTSEGSHIFT) + extralight;
-
-      if (light >= LIGHTLEVELS)
-  light = LIGHTLEVELS-1;
-
-      if (light < 0)
-  light = 0;
-
-      stop = pl->maxx + 1;
-      planezlight = zlight[light];
-      pl->top[pl->minx-1] = pl->top[stop] = 0xffffffffu; // dropoff overflow
-
-      for (x = pl->minx ; x <= stop ; x++)
-         R_MakeSpans(x,pl->top[x-1],pl->bottom[x-1],
-                     pl->top[x],pl->bottom[x], &dsvars);
-
-      W_UnlockLumpNum(firstflat + flattranslation[pl->picnum]);
-    }
-  }
+			tex_patch = R_CacheTextureCompositePatchNum(texture);
+			
+			// killough 10/98: Use sky scrolling offset, and possibly flip picture
+			for (x = pl->minx; (dcvars.x = x) <= pl->maxx; x++)
+			{
+				if ((dcvars.yl = pl->top[x]) != -1 && dcvars.yl <= (dcvars.yh = pl->bottom[x])) // dropoff overflow
+				{
+					dcvars.source = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x])^flip) >> ANGLETOSKYSHIFT);
+					dcvars.prevsource = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x-1])^flip) >> ANGLETOSKYSHIFT);
+					dcvars.nextsource = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x+1])^flip) >> ANGLETOSKYSHIFT);
+					colfunc(&dcvars);
+				}
+			}
+			
+			R_UnlockTextureCompositePatchNum(texture);
+		}
+		else
+		{     // regular flat
+			
+			int stop, light;
+			draw_span_vars_t dsvars;
+			
+			dsvars.source = W_CacheLumpNum(firstflat + flattranslation[pl->picnum]);
+			
+			xoffs = pl->xoffs;  // killough 2/28/98: Add offsets
+			yoffs = pl->yoffs;
+			
+			planeheight = D_abs(pl->height-viewz);
+			light = (pl->lightlevel >> LIGHTSEGSHIFT) + extralight;
+			
+			if (light >= LIGHTLEVELS)
+				light = LIGHTLEVELS-1;
+			
+			if (light < 0)
+				light = 0;
+			
+			stop = pl->maxx + 1;
+			planezlight = zlight[light];
+			pl->top[pl->minx-1] = pl->top[stop] = 0xffffffffu; // dropoff overflow
+			
+			for (x = pl->minx ; x <= stop ; x++)
+			{
+				R_MakeSpans(x,pl->top[x-1],pl->bottom[x-1], pl->top[x],pl->bottom[x], &dsvars);
+			}
+				
+			W_UnlockLumpNum(firstflat + flattranslation[pl->picnum]);
+		}
+	}
 }
 
 //

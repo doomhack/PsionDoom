@@ -1032,25 +1032,7 @@ static void M_QuitResponse(int ch)
 {
   if (ch != 'y')
     return;
-  if ((!netgame || demoplayback) // killough 12/98
-      && !nosfxparm && snd_card) // avoid delay if no sound card
-  {
-    int i;
 
-    if (gamemode == commercial)
-      S_StartSound(NULL,quitsounds2[(gametic>>2)&7]);
-    else
-      S_StartSound(NULL,quitsounds[(gametic>>2)&7]);
-
-    // wait till all sounds stopped or 3 seconds are over
-    i = 30;
-    while (i>0) {
-      I_uSleep(100000); // CPhipps - don't thrash cpu in this loop
-      if (!I_AnySoundStillPlaying())
-        break;
-      i--;
-    }
-  }
   exit(0); // killough
 }
 
@@ -2820,7 +2802,7 @@ void M_DrawEnemy(void)
 // killough 10/10/98
 
 extern int usejoystick, usemouse, default_mus_card, default_snd_card;
-extern int detect_voices, realtic_clock_rate, tran_filter_pct;
+extern int realtic_clock_rate, tran_filter_pct;
 
 setup_menu_t gen_settings1[], gen_settings2[], gen_settings3[];
 
@@ -2862,16 +2844,6 @@ enum {
 #define G_YA3 (G_YA2+5*8)
 #define GF_X 76
 
-static const char *videomodes[] = {"8bit","15bit","16bit",
-                                   "32bit","OpenGL", NULL};
-
-static const char *gltexfilters[] = {"GL_NEAREST","GL_LINEAR",
-                                     "GL_LINEAR_MIPMAP_LINEAR",
-                                     NULL};
-
-static const char *gltexformats[] = {"GL_RGBA","GL_RGB5_A1",
-                                     "GL_RGBA4", NULL};
-
 setup_menu_t gen_settings1[] = { // General Settings screen1
 
   {"Video"       ,S_SKIP|S_TITLE, m_null, G_X, G_YA - 12},
@@ -2881,12 +2853,6 @@ setup_menu_t gen_settings1[] = { // General Settings screen1
 
   {"Translucency filter percentage", S_NUM, m_null, G_X,
    G_YA + general_transpct*8, {"tran_filter_pct"}, 0, 0, M_Trans},
-
-  {"Fullscreen Video mode", S_YESNO|S_PRGWARN, m_null, G_X,
-   G_YA + general_fullscreen*8, {"use_fullscreen"}, 0, 0, NULL},
-
-  {"Video mode", S_CHOICE|S_PRGWARN, m_null, G_X,
-   G_YA + general_videomode*8, {"videomode"}, 0, 0, NULL, videomodes},
 
   {"Uncapped Framerate", S_YESNO, m_null, G_X,
   G_YA + general_uncapped*8, {"uncapped_framerate"}},

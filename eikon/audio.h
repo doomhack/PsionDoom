@@ -23,34 +23,30 @@
 typedef struct
 {
   int freq;
-  unsigned short format;
   unsigned char channels;
-  unsigned char silence;
   unsigned short samples;
   unsigned int size;
-  void (*callback)(void *userdata, unsigned char *stream, int len);
-  void *userdata;
-} SDL_AudioSpec;
+  void (*callback)(unsigned char *stream, const int len);
+} AudioSpec;
 
 
-int SDL_OpenAudio(SDL_AudioSpec *desired, SDL_AudioSpec *obtained);
+int OpenAudio(AudioSpec *desired);
 
 //******************************************************************
 
 class CGameAudio : CBase
 {
 public:
-	static CGameAudio* NewL(TInt aSamplesPerFrame, SDL_AudioSpec* audioSpec);
+	static CGameAudio* NewL(TInt aSamplesPerFrame, AudioSpec* audioSpec);
 	~CGameAudio();
 	void Destruct();
 	void SoundUpdate();
 	TInt ProcessSoundSamples(TInt16* aBuffer);
-	TInt FirstNoOfSamples();
 
 	void StartAudioLoop();
 
 private:
-	CGameAudio(TInt aSamplesPerFrame, SDL_AudioSpec* audioSpec);
+	CGameAudio(TInt aSamplesPerFrame, AudioSpec* audioSpec);
 	void ConstructL();
 
 	void BuildAlawTable();
@@ -62,14 +58,12 @@ private:
 
 	TUint8*			iAlawSoundBuffer;
 	TInt16*			iPcmSoundBuffer;
-
-	TUint32			iBufferTimeUs;
 	
 	TUint8			iAlawLookupTable[8192];
 
 	TInt			iSamplesPerFrame;
 
-	SDL_AudioSpec   iAudioSpec;
+	AudioSpec		iAudioSpec;
 };
 
 

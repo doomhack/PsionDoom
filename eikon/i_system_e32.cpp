@@ -12,6 +12,10 @@
 
 #include "i_system_e32.h"
 
+extern "C"
+{
+	#include "lprintf.h"
+}
 
 //**************************************************************************************
 
@@ -46,20 +50,6 @@ TRequestStatus iRedrawEventStatus = 0;
 bool clear_screen = true;
 
 bool has_focus = true;
-
-//**************************************************************************************
-
-void I_uSleep_e32(unsigned long /*usecs*/)
-{
-	/*
-	if(usecs < 2500)
-		return;
-
-	TTimeIntervalMicroSeconds32 ttms = usecs;
-
-	User::After(ttms);
-	*/
-}
 
 //**************************************************************************************
 
@@ -337,12 +327,12 @@ void I_FinishUpdate_e32(byte* srcBuffer, byte* pallete, const unsigned int width
 			unsigned int p1 = pallete[ ps1			& 0xff];
 			unsigned int p2 = pallete[(ps1 >> 8)	& 0xff];
 			unsigned int p3 = pallete[(ps1 >> 16)	& 0xff];
-			unsigned int p4 = pallete[(ps1 >> 24)	& 0xff];
+			unsigned int p4 = pallete[(ps1 >> 24)];
 
 			unsigned int p5 = pallete[ ps2			& 0xff];
 			unsigned int p6 = pallete[(ps2 >> 8)	& 0xff];
 			unsigned int p7 = pallete[(ps2 >> 16)	& 0xff];
-			unsigned int p8 = pallete[(ps2 >> 24)	& 0xff];
+			unsigned int p8 = pallete[(ps2 >> 24)];
 
 			*pDstScanline++ =		p1 | (p2 << 8) | (p3 << 16) | (p4 << 24);
 			*pDstScanline++ =		p5 | (p6 << 8) | (p7 << 16) | (p8 << 24);
@@ -354,12 +344,12 @@ void I_FinishUpdate_e32(byte* srcBuffer, byte* pallete, const unsigned int width
 			p1 = pallete[ ps1			& 0xff];
 			p2 = pallete[(ps1 >> 8)		& 0xff];
 			p3 = pallete[(ps1 >> 16)	& 0xff];
-			p4 = pallete[(ps1 >> 24)	& 0xff];
+			p4 = pallete[(ps1 >> 24)];
 
 			p5 = pallete[ ps2			& 0xff];
 			p6 = pallete[(ps2 >> 8)		& 0xff];
 			p7 = pallete[(ps2 >> 16)	& 0xff];
-			p8 = pallete[(ps2 >> 24)	& 0xff];
+			p8 = pallete[(ps2 >> 24)];
 
 			*pDstScanline++ =		p1 | (p2 << 8) | (p3 << 16) | (p4 << 24);
 			*pDstScanline++ =		p5 | (p6 << 8) | (p7 << 16) | (p8 << 24);
@@ -498,9 +488,12 @@ void I_Quit_e32()
 //**************************************************************************************
 
 
-extern "C" int psionDoomMain(int argc, char **argv);
 
-EXPORT_C void EntryRunGame(int argc, char* argv[])
+//**************************************************************************************
+
+extern "C" int psionDoomMain();
+
+EXPORT_C void EntryRunGame(int /*argc*/, char* /*argv[]*/)
 {
 
 	CTrapCleanup* cleanup=CTrapCleanup::New();
@@ -520,16 +513,7 @@ EXPORT_C void EntryRunGame(int argc, char* argv[])
 	if (chdir("d:\\Doom") != 0)
 		chdir("c:\\Doom");
 
-	/*
-	argc = 3;
-	argv = new char*[4];
-	argv[0] = "doom";
-	argv[1] = "-timedemo";
-	argv[2] = "demo1";
-	argv[3] = NULL;
-	*/
-
-	psionDoomMain(argc, argv);
+	psionDoomMain();
 
 	delete cleanup;
 }
@@ -548,19 +532,7 @@ EXPORT_C int E32Main()
 {
 	CTrapCleanup* cleanup=CTrapCleanup::New();
 
-	int argc = 0;
-	char** argv = NULL;
-
-/*
-	argc = 3;
-	argv = new char*[4];
-	argv[0] = "doom";
-	argv[1] = "-timedemo";
-	argv[2] = "demo1";
-	argv[3] = NULL;
-*/
-
-	psionDoomMain(argc, argv);
+	psionDoomMain();
 
 	delete cleanup;
 

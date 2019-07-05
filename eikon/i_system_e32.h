@@ -16,8 +16,6 @@ extern "C" {
 #include "d_main.h"
 
 
-void I_uSleep_e32(unsigned long usecs);
-
 void I_InitScreen_e32();
 
 void I_CreateBackBuffer_e32();

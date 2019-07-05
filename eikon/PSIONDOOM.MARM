@@ -10,8 +10,17 @@ ERASE = @erase
 
 INCDIR  = -I "..\..\PSIONDOOM\EIKON" -I "..\..\PSIONDOOM\EIKON\LIBTIMIDITY" -I- -I "..\..\EPOC32\INCLUDE" -I "..\..\EPOC32\INCLUDE\LIBC"
 
-GCCFLAGS=-c -nostdinc -Wall -Wno-ctor-dtor-privacy -mcpu-arm710 -mapcs-32 \
-		-mshort-load-bytes -msoft-float -O3 -fcheck-new -fvtable-thunks
+#GCCFLAGS=-c -nostdinc -Wall -Wno-ctor-dtor-privacy -mcpu-arm710 -mapcs-32 \
+#		-mshort-load-bytes -msoft-float -O3 -fcheck-new -fvtable-thunks
+
+GCCFLAGS=   -c -nostdinc -Wall -Wno-ctor-dtor-privacy -march=armv4 -mapcs-32 -fsigned-char\
+		-mno-alignment-traps -msoft-float -O3 -fvtable-thunks \
+		-fstrength-reduce -fthread-jumps  -fcse-follow-jumps -fcse-skip-blocks\
+		-frerun-cse-after-loop  -fschedule-insns -fschedule-insns2 -fexpensive-optimizations\
+		-fforce-mem -fforce-addr -funroll-loops -frerun-loop-opt -frename-registers -fstrict-aliasing
+
+
+
 
 GCCDEFS = -D__SYMBIAN32__ -D__PSISOFT32__ -D__GCC32__ -D__EPOC32__ -D__MARM__ -D__EXE__ $(USERDEFS)
 

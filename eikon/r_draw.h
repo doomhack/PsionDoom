@@ -135,10 +135,10 @@ R_DrawColumn_f R_GetDrawColumnFunc(enum column_pipeline_e type,
                                    enum draw_filter_type_e filterz);
 
 // Span blitting for rows, floor/ceiling. No Spectre effect needed.
-typedef void (*R_DrawSpan_f)(draw_span_vars_t *dsvars);
-R_DrawSpan_f R_GetDrawSpanFunc(enum draw_filter_type_e filter,
-                               enum draw_filter_type_e filterz);
 void R_DrawSpan(draw_span_vars_t *dsvars);
+
+//Plain span. Like SNES Doom.
+void R_DrawSpanPlain(draw_span_vars_t *dsvars);
 
 void R_InitBuffer(int width, int height);
 

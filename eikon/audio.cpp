@@ -21,21 +21,12 @@ unsigned char linear2alaw2(short pcm_val);
  * way is to interace with the MediaServer. Apart from not having figured out
  * the MediaServer API, I suspect it will require client-server interaction.
  * Most likely that will be killing for EMame's performance. 
- *
- * I have taken yet another shortcut...
- * I noticed that in ER6 the sound driver's include files are not longer present
- * in \epoc32\include, however, the WINS sound driver binaries (esound.pdd and 
- * esdrv.ldd) are still there. I simply copied the ER5 include files over
- * to ER6, with the one change that in ER6 RDevSound should derive from 
- * RBusLogicalChannel rather than RLogicalChannel. If I then explicitly load 
- * the 2 sound drivers, sound works just fine in ER6/WINS. I haven't got a clue
- * on whether this will work on target.
  */
 
 
 RThread*		pSoundThread = NULL;
 
-void SDL_OpenAudioOnThread(SDL_AudioSpec *desired)
+void OpenAudioOnThread(AudioSpec *desired)
 {
 	CGameAudio* pAudio = CGameAudio::NewL(desired->samples, desired);
 
@@ -46,12 +37,12 @@ void SDL_OpenAudioOnThread(SDL_AudioSpec *desired)
 }
 
 
-TInt SDL_OpenAudioThreadFunc(TAny* aParams)
+TInt OpenAudioThreadFunc(TAny* aParams)
 {
 
     CTrapCleanup* cleanupStack = CTrapCleanup::New();
 
-    TRAPD(err, SDL_OpenAudioOnThread( (SDL_AudioSpec*)aParams ););
+    TRAPD(err, OpenAudioOnThread( (AudioSpec*)aParams ););
 
     delete cleanupStack;
 
@@ -60,12 +51,12 @@ TInt SDL_OpenAudioThreadFunc(TAny* aParams)
 }
 
 
-int SDL_OpenAudio(SDL_AudioSpec *desired, SDL_AudioSpec *unused)
+int OpenAudio(AudioSpec *desired)
 {
 	pSoundThread = new (ELeave)RThread();
 
-	pSoundThread->Create(_L("Sound Thread"), SDL_OpenAudioThreadFunc, 16384, KMinHeapSize, 1*1024*1024, (TAny*)desired);
-	
+	pSoundThread->Create(_L("Sound Thread"), OpenAudioThreadFunc, 16384, KMinHeapSize, 1*1024*1024, (TAny*)desired);
+
 	pSoundThread->Resume();
 
 	return 1;
@@ -80,18 +71,13 @@ int SDL_OpenAudio(SDL_AudioSpec *desired, SDL_AudioSpec *unused)
  *
  *******************************************/
 
-const TInt KDefaultBufSize = 0x8000;
-
-
-
-
-CGameAudio::CGameAudio(TInt aSamplesPerFrame, SDL_AudioSpec* audioSpec) : iSamplesPerFrame(aSamplesPerFrame)
+CGameAudio::CGameAudio(TInt aSamplesPerFrame, AudioSpec* audioSpec) : iSamplesPerFrame(aSamplesPerFrame)
 {
 	iAudioSpec = *audioSpec;
 }
 
 
-CGameAudio* CGameAudio::NewL(TInt aSamplesPerFrame, SDL_AudioSpec* audioSpec)
+CGameAudio* CGameAudio::NewL(TInt aSamplesPerFrame, AudioSpec* audioSpec)
 {
 	CGameAudio*		self = new(ELeave) CGameAudio(aSamplesPerFrame, audioSpec);
 	self->ConstructL();
@@ -127,7 +113,7 @@ void CGameAudio::ConstructL()
 	TPckg<TSoundConfigV01>	sc(soundConfig);
 
 	iDevSound.Config(sc);
-	soundConfig.iAlawBufferSize = iSamplesPerFrame * 2;
+	soundConfig.iAlawBufferSize = iSamplesPerFrame << 1;
 	soundConfig.iVolume = EVolumeLoud;
 	soundConfig.iVolumeValue = 1;
 	User::LeaveIfError(iDevSound.SetConfig(sc));
@@ -136,8 +122,6 @@ void CGameAudio::ConstructL()
 	iAlawSoundBuffer = new TUint8[iSamplesPerFrame];
 	iPcmSoundBuffer = new TInt16[iSamplesPerFrame];
 
-	iBufferTimeUs = (iSamplesPerFrame / 8) * 1000;
-
 	BuildAlawTable();
 }
 
@@ -145,7 +129,7 @@ void CGameAudio::BuildAlawTable()
 {
 	for(int i = 0; i < 8192; i++)
 	{
-		short s = (i - 4096) << 3;
+		short s = (short)((i - 4096) << 3);
 		iAlawLookupTable[i] = linear2alaw2(s);
 	}
 }
@@ -153,18 +137,13 @@ void CGameAudio::BuildAlawTable()
 
 void CGameAudio::StartAudioLoop()
 {
-	while(true)
+	do
 	{
-		iAudioSpec.callback(iAudioSpec.userdata, (unsigned char*)iPcmSoundBuffer, iSamplesPerFrame * sizeof(short));
+		iAudioSpec.callback((unsigned char*)iPcmSoundBuffer, iSamplesPerFrame * sizeof(short));
+		
 		ProcessSoundSamples(iPcmSoundBuffer);
 		SoundUpdate();
-	}
-}
-
-
-TInt CGameAudio::FirstNoOfSamples()
-{
-	return iSamplesPerFrame;
+	} while(true);
 }
 
 void CGameAudio::SoundUpdate()
@@ -175,33 +154,8 @@ void CGameAudio::SoundUpdate()
 	iDevSound.PlayAlawData(iStatus, ptr);
 
 	User::WaitForRequest(iStatus);
+
 }
-
-#if 0
-
-TInt CGameAudio::ProcessSoundSamples(TInt16* aBuffer)
-{	
-	TUint8* alawSoundbuffer = iAlawSoundBuffer;
-
-	for (TUint i=0 ; i<iSamplesPerFrame; i+=8)
-	{
-		//*alawSoundbuffer++ = linear2alaw2(*aBuffer++);
-
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-		*alawSoundbuffer++ = iAlawLookupTable[ (*aBuffer++ >> 3) + 4096];
-	}
-
-	return iSamplesPerFrame;
-}
-
-#else
-
 
 TInt CGameAudio::ProcessSoundSamples(TInt16* aBuffer)
 {	
@@ -239,8 +193,6 @@ TInt CGameAudio::ProcessSoundSamples(TInt16* aBuffer)
 
 	return iSamplesPerFrame;
 }
-
-#endif
 
 
 
@@ -287,9 +239,9 @@ TInt CGameAudio::ProcessSoundSamples(TInt16* aBuffer)
 #define	SEG_MASK	(0x70)		/* Segment field mask. */
 
 
-static int search(int val, short *table, int size)
+static short search(int val, short *table, short size)
 {
-	int		i;
+	short i;
 
 	for (i = 0; i < size; i++) {
 		if (val <= *table++)
@@ -308,13 +260,13 @@ unsigned char linear2alaw2(short pcm_val)	/* 2's complement (16-bit range) */
    short	 seg;
    unsigned char aval;
    
-   pcm_val = pcm_val >> 3;
+   pcm_val = (short)(pcm_val >> 3);
 
    if (pcm_val >= 0) {
       mask = 0xD5;		/* sign (7th) bit = 1 */
    } else {
       mask = 0x55;		/* sign bit = 0 */
-      pcm_val = -pcm_val - 1;
+      pcm_val = (short)(-pcm_val - 1);
    }
    
    /* Convert the scaled magnitude to segment number. */
@@ -325,11 +277,11 @@ unsigned char linear2alaw2(short pcm_val)	/* 2's complement (16-bit range) */
    if (seg >= 8)		/* out of range, return maximum value. */
       return (unsigned char) (0x7F ^ mask);
    else {
-      aval = (unsigned char) seg << SEG_SHIFT;
+      aval = (unsigned char) (seg << SEG_SHIFT);
       if (seg < 2)
 	 aval |= (pcm_val >> 1) & QUANT_MASK;
       else
 	 aval |= (pcm_val >> seg) & QUANT_MASK;
-      return (aval ^ mask);
+      return (unsigned char)(aval ^ mask);
    }
 }

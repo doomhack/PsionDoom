@@ -35,19 +35,14 @@
 #define TEMPBUF byte_tempbuf
 
 
-#if (R_DRAWCOLUMN_PIPELINE & RDC_TRANSLUCENT)
-#define GETDESTCOLOR8(col1, col2) (temptranmap[((col1)<<8)+(col2)])
-#elif (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
+#if (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
 #define GETDESTCOLOR8(col) (tempfuzzmap[6*256+(col)])
 #else
 #define GETDESTCOLOR8(col) (col)
 #endif
 
-#if (R_DRAWCOLUMN_PIPELINE & RDC_TRANSLUCENT)
-    #define GETDESTCOLOR(col1, col2) GETDESTCOLOR8(col1, col2)
-#else
-    #define GETDESTCOLOR(col) GETDESTCOLOR8(col)
-#endif
+#define GETDESTCOLOR(col) GETDESTCOLOR8(col)
+
 
 //
 // R_FlushWholeOpaque
@@ -71,9 +66,7 @@ static void R_FLUSHWHOLE_FUNCNAME(void)
       
       while(--count >= 0)
       {
-#if (R_DRAWCOLUMN_PIPELINE & RDC_TRANSLUCENT)
-         *dest = GETDESTCOLOR(*dest, *source);
-#elif (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
+#if (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
          // SoM 7-28-04: Fix the fuzz problem.
          *dest = GETDESTCOLOR(dest[fuzzoffset[fuzzpos]]);
          
@@ -118,10 +111,7 @@ static void R_FLUSHHEADTAIL_FUNCNAME(void)
          
          while(--count >= 0)
          {
-#if (R_DRAWCOLUMN_PIPELINE & RDC_TRANSLUCENT)
-            // haleyjd 09/11/04: use temptranmap here
-            *dest = GETDESTCOLOR(*dest, *source);
-#elif (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
+#if (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
             // SoM 7-28-04: Fix the fuzz problem.
             *dest = GETDESTCOLOR(dest[fuzzoffset[fuzzpos]]);
             
@@ -146,10 +136,7 @@ static void R_FLUSHHEADTAIL_FUNCNAME(void)
          
          while(--count >= 0)
          {
-#if (R_DRAWCOLUMN_PIPELINE & RDC_TRANSLUCENT)
-            // haleyjd 09/11/04: use temptranmap here
-            *dest = GETDESTCOLOR(*dest, *source);
-#elif (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
+#if (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
             // SoM 7-28-04: Fix the fuzz problem.
             *dest = GETDESTCOLOR(dest[fuzzoffset[fuzzpos]]);
             
@@ -173,6 +160,7 @@ static void R_FLUSHQUAD_FUNCNAME(void)
    SCREENTYPE *source = &TEMPBUF[commontop << 2];
    SCREENTYPE *dest = drawvars.TOPLEFT + commontop*drawvars.PITCH + startx;
    int count;
+
 #if (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
    int fuzz1, fuzz2, fuzz3, fuzz4;
 
@@ -184,17 +172,7 @@ static void R_FLUSHQUAD_FUNCNAME(void)
 
    count = commonbot - commontop + 1;
 
-#if (R_DRAWCOLUMN_PIPELINE & RDC_TRANSLUCENT)
-   while(--count >= 0)
-   {
-      dest[0] = GETDESTCOLOR(dest[0], source[0]);
-      dest[1] = GETDESTCOLOR(dest[1], source[1]);
-      dest[2] = GETDESTCOLOR(dest[2], source[2]);
-      dest[3] = GETDESTCOLOR(dest[3], source[3]);
-      source += 4 * sizeof(byte);
-      dest += drawvars.PITCH * sizeof(byte);
-   }
-#elif (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
+#if (R_DRAWCOLUMN_PIPELINE & RDC_FUZZ)
    while(--count >= 0)
    {
       dest[0] = GETDESTCOLOR(dest[0 + fuzzoffset[fuzz1]]);
@@ -209,7 +187,8 @@ static void R_FLUSHQUAD_FUNCNAME(void)
       dest += drawvars.PITCH * sizeof(byte);
    }
 #else
-   if ((sizeof(int) == 4) && (((int)source % 4) == 0) && (((int)dest % 4) == 0)) {
+   if ((((int)source % 4) == 0) && (((int)dest % 4) == 0))
+   {
       while(--count >= 0)
       {
          *(int *)dest = *(int *)source;

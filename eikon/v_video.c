@@ -200,7 +200,6 @@ void V_Init (void)
   // reset the all
   for (i = 0; i<NUM_SCREENS; i++) {
     screens[i].data = NULL;
-    screens[i].not_on_heap = false;
     screens[i].width = 0;
     screens[i].height = 0;
     screens[i].byte_pitch = 0;
@@ -599,8 +598,8 @@ int V_GetPixelDepth(void) {
 //
 // V_AllocScreen
 //
-void V_AllocScreen(screeninfo_t *scrn) {
-  if (!scrn->not_on_heap)
+void V_AllocScreen(screeninfo_t *scrn)
+{
     if ((scrn->byte_pitch * scrn->height) > 0)
       scrn->data = malloc(scrn->byte_pitch*scrn->height);
 }
@@ -618,11 +617,10 @@ void V_AllocScreens(void) {
 //
 // V_FreeScreen
 //
-void V_FreeScreen(screeninfo_t *scrn) {
-  if (!scrn->not_on_heap) {
+void V_FreeScreen(screeninfo_t *scrn)
+{
     free(scrn->data);
     scrn->data = NULL;
-  }
 }
 
 //

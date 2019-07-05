@@ -124,27 +124,6 @@ void I_Init(void)
   R_InitInterpolation();
 }
 
-/* cleanup handling -- killough:
- */
-static void I_SignalHandler(int s)
-{
-  char buf[2048];
-
-  //signal(s,SIG_IGN);  /* Ignore future instances of this signal.*/
-
-  strcpy(buf,"Exiting on signal: ");
-  I_SigString(buf+strlen(buf),2000-strlen(buf),s);
-
-  /* If corrupted memory could cause crash, dump memory
-   * allocation history, which points out probable causes
-   */
-  if (s==SIGSEGV || s==SIGILL || s==SIGFPE)
-    Z_DumpHistory(buf);
-
-  I_Error("I_SignalHandler: %s", buf);
-}
-
-
 
 /* killough 2/22/98: Add support for ENDBOOM, which is PC-specific
  *
@@ -328,17 +307,71 @@ static void I_Quit (void)
 }
 
 
-//int main(int argc, const char * const * argv)
-int psionDoomMain(int argc, char **argv)
+char** I_GetCommandLineArgs(int* argc)
 {
+	char argBuff[2048];
+	char** argv = NULL;
+
+	const unsigned int enough_params = 32; //Really, that will be enough.
+
+	lprintf(LO_INFO, "Enter any command line args here: Eg:\n");
+	lprintf(LO_INFO, "-file abcd.wad to add pwads.\n");
+	lprintf(LO_INFO, "-nosound to disable sound.\n");
+	lprintf(LO_INFO, "-nomusic to disable music.\n");
+	lprintf(LO_INFO, "\n");
+	lprintf(LO_INFO, "Seperate args with a space. (Eg: -nomusic -file abcd.wad)\n");
+	lprintf(LO_INFO, "Just press enter to continue.\n");
+
+	*argc = 0;
+
+	gets(argBuff);
+
+	if(strlen(argBuff) > 0)
+	{
+		char* token = NULL;
+
+		*argc = 1;
+		argv = malloc(enough_params * sizeof(char*));
+
+		memset(argv, 0, enough_params*sizeof(char*));
+
+		argv[0] = "doom"; //Seems to need a dummy param.
+
+	    token = strtok(argBuff, " ");
+    
+		while ((token != NULL) && (*argc < (enough_params-1) )) //Last param must be NULL.
+		{
+			unsigned int len = strlen(token);
+			
+			if(len > 0)
+			{
+
+				argv[*argc] = malloc(len + 1);
+				strcpy(argv[*argc], token);
+				
+				(*argc)++;
+			}
+
+			token = strtok(NULL, " ");
+		} 
+	}
+
+	return argv;
+}
 
 
-  myargc = argc;
-  myargv = argv;
+//int main(int argc, const char * const * argv)
+int psionDoomMain()
+{
+	/* Version info */
+	lprintf(LO_INFO,"\n");
+	PrintVer();
+	lprintf(LO_INFO,"\n");
 
-  /* Version info */
-  lprintf(LO_INFO,"\n");
-  PrintVer();
+
+	myargv = I_GetCommandLineArgs(&myargc);
+	
+
 
   /* cph - Z_Close must be done after I_Quit, so we register it first. */
   atexit(Z_Close);
