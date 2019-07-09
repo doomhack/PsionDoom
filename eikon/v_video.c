@@ -391,20 +391,8 @@ static void V_DrawMemPatch(int x, int y, int scrn, const rpatch_t *patch, int cm
 			bottom = ( (y + patch->height) * DY ) >> FRACBITS;
 			
 			dcvars.iscale = DYI;
-			dcvars.edgetype = drawvars.patch_edges;
 
-			if (drawvars.filterpatch == RDRAW_FILTER_LINEAR)
-			{
-				// bias the texture u coordinate
-				if (patch->isNotTileable)
-					col = -(FRACUNIT>>1);
-				else
-					col = (patch->width<<FRACBITS)-(FRACUNIT>>1);
-			}
-			else
-			{
-				col = 0;
-			}
+			col = 0;
 
 			for (dcvars.x=left; dcvars.x<right; dcvars.x++, col+=DXI)
 			{
@@ -426,7 +414,6 @@ static void V_DrawMemPatch(int x, int y, int scrn, const rpatch_t *patch, int cm
 				  
 				  dcvars.yl = (((y + post->topdelta) * DY)>>FRACBITS);
 				  dcvars.yh = (((y + post->topdelta + post->length) * DY - (FRACUNIT>>1))>>FRACBITS);
-				  dcvars.edgeslope = post->slope;
 				  
 				  if ((dcvars.yh < 0) || (dcvars.yh < top))
 					  continue;
@@ -436,27 +423,23 @@ static void V_DrawMemPatch(int x, int y, int scrn, const rpatch_t *patch, int cm
 				  if (dcvars.yh >= bottom)
 				  {
 					  dcvars.yh = bottom-1;
-					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_BOT_MASK;
 				  }
 
 				  if (dcvars.yh >= SCREENHEIGHT)
 				  {
 					  dcvars.yh = SCREENHEIGHT-1;
-					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_BOT_MASK;
 				  }
 
 				  if (dcvars.yl < 0)
 				  {
 					  yoffset = 0-dcvars.yl;
 					  dcvars.yl = 0;
-					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_TOP_MASK;
 				  }
 
 				  if (dcvars.yl < top)
 				  {
 					  yoffset = top-dcvars.yl;
 					  dcvars.yl = top;
-					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_TOP_MASK;
 				  }
 
 				  dcvars.source = column->pixels + post->topdelta + yoffset;

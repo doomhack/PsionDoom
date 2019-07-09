@@ -90,17 +90,10 @@ byte *translationtables;
 draw_vars_t drawvars = { 
   NULL, // byte_topleft
   0, // byte_pitch
-  RDRAW_FILTER_POINT, // filterwall
-  RDRAW_FILTER_POINT, // filterfloor
-  RDRAW_FILTER_POINT, // filtersprite
-  RDRAW_FILTER_POINT, // filterz
-  RDRAW_FILTER_POINT, // filterpatch
-
-  RDRAW_MASKEDCOLUMNEDGE_SQUARE, // sprite_edges
-  RDRAW_MASKEDCOLUMNEDGE_SQUARE, // patch_edges
 
   // 49152 = FRACUNIT * 0.75
   // 81920 = FRACUNIT * 1.25
+
   49152 // mag_threshold
 };
 
@@ -137,8 +130,6 @@ void R_SetDefaultDrawColumnVars(draw_column_vars_t *dcvars)
 	dcvars->source = NULL;
 	dcvars->colormap = colormaps[0];
 	dcvars->translation = NULL;
-	dcvars->edgeslope = 0;
-	dcvars->edgetype = drawvars.sprite_edges;
 }
 
 //

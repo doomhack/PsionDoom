@@ -42,27 +42,9 @@
 
 enum column_pipeline_e {
   RDC_PIPELINE_STANDARD,
-  RDC_PIPELINE_TRANSLUCENT,
   RDC_PIPELINE_TRANSLATED,
   RDC_PIPELINE_FUZZ,
   RDC_PIPELINE_MAXPIPELINES,
-};
-
-// Used to specify what kind of filering you want
-enum draw_filter_type_e {
-  RDRAW_FILTER_NONE,
-  RDRAW_FILTER_POINT,
-  RDRAW_FILTER_LINEAR,
-  RDRAW_FILTER_ROUNDED,
-  RDRAW_FILTER_MAXFILTERS
-};
-
-// Used to specify what kind of column edge rendering to use on masked 
-// columns. SQUARE = standard, SLOPED = slope the column edge up or down
-// based on neighboring columns
-enum sloped_edge_type_e {
-  RDRAW_MASKEDCOLUMNEDGE_SQUARE,
-  RDRAW_MASKEDCOLUMNEDGE_SLOPED
 };
 
 // Packaged into a struct - POPE
@@ -78,9 +60,7 @@ typedef struct {
 
   const lighttable_t  *colormap;
   const byte          *translation;
-  int                 edgeslope; // OR'ed RDRAW_EDGESLOPE_*
 
-  enum sloped_edge_type_e edgetype;
 } draw_column_vars_t;
 
 void R_SetDefaultDrawColumnVars(draw_column_vars_t *dcvars);
@@ -104,15 +84,6 @@ typedef struct {
   byte           *byte_topleft;
   int   byte_pitch;
 
-  enum draw_filter_type_e filterwall;
-  enum draw_filter_type_e filterfloor;
-  enum draw_filter_type_e filtersprite;
-  enum draw_filter_type_e filterz;
-  enum draw_filter_type_e filterpatch;
-
-  enum sloped_edge_type_e sprite_edges;
-  enum sloped_edge_type_e patch_edges;
-
   // Used to specify an early-out magnification threshold for filtering.
   // If a texture is being minified (dcvars.iscale > rdraw_magThresh), then it
   // drops back to point filtering.
@@ -125,11 +96,6 @@ extern byte playernumtotrans[MAXPLAYERS]; // CPhipps - what translation table fo
 extern byte       *translationtables;
 
 typedef void (*R_DrawColumn_f)(draw_column_vars_t *dcvars);
-R_DrawColumn_f R_GetDrawColumnFunc(enum column_pipeline_e type,
-                                   enum draw_filter_type_e filter,
-                                   enum draw_filter_type_e filterz);
-
-
 
 
 // The span blitting interface.

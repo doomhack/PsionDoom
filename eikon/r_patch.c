@@ -161,32 +161,6 @@ static int getPatchIsNotTileable(const patch_t *patch) {
 }
 
 //---------------------------------------------------------------------------
-static int getIsSolidAtSpot(const column_t *column, int spot)
-{
-  if (!column) return 0;
-  while (column->topdelta != 0xff) {
-    if (spot < column->topdelta) return 0;
-    if ((spot >= column->topdelta) && (spot <= column->topdelta + column->length)) return 1;
-    column = (const column_t*)((const byte*)column + 3 + column->length + 1);
-  }
-  return 0;
-}
-
-//---------------------------------------------------------------------------
-// Used to determine whether a column edge (top or bottom) should slope
-// up or down for smoothed masked edges - POPE
-//---------------------------------------------------------------------------
-static int getColumnEdgeSlope(const column_t *prevcolumn, const column_t *nextcolumn, int spot)
-{
-  int holeToLeft = !getIsSolidAtSpot(prevcolumn, spot);
-  int holeToRight = !getIsSolidAtSpot(nextcolumn, spot);
-
-  if (holeToLeft && !holeToRight) return 1;
-  if (!holeToLeft && holeToRight) return -1;
-  return 0;
-}
-
-//---------------------------------------------------------------------------
 static void createPatch(int id) {
   rpatch_t *patch;
   const int patchNum = id;
@@ -201,7 +175,6 @@ static void createPatch(int id) {
   int numPostsTotal;
   const unsigned char *oldColumnPixelData;
   int numPostsUsedSoFar;
-  int edgeSlope;
 
 #ifdef RANGECHECK
   if (id >= numlumps)
@@ -285,14 +258,6 @@ static void createPatch(int id) {
       patch->posts[numPostsUsedSoFar].topdelta = oldColumn->topdelta;
       patch->posts[numPostsUsedSoFar].length = oldColumn->length;
       patch->posts[numPostsUsedSoFar].slope = 0;
-
-      edgeSlope = getColumnEdgeSlope(oldPrevColumn, oldNextColumn, oldColumn->topdelta);
-      if (edgeSlope == 1) patch->posts[numPostsUsedSoFar].slope |= RDRAW_EDGESLOPE_TOP_UP;
-      else if (edgeSlope == -1) patch->posts[numPostsUsedSoFar].slope |= RDRAW_EDGESLOPE_TOP_DOWN;
-
-      edgeSlope = getColumnEdgeSlope(oldPrevColumn, oldNextColumn, oldColumn->topdelta+oldColumn->length);
-      if (edgeSlope == 1) patch->posts[numPostsUsedSoFar].slope |= RDRAW_EDGESLOPE_BOT_UP;
-      else if (edgeSlope == -1) patch->posts[numPostsUsedSoFar].slope |= RDRAW_EDGESLOPE_BOT_DOWN;
 
       // fill in the post's pixels
       oldColumnPixelData = (const byte *)oldColumn + 3;
@@ -407,7 +372,7 @@ static void createTextureCompositePatch(int id) {
   int numPostsTotal;
   const unsigned char *oldColumnPixelData;
   int numPostsUsedSoFar;
-  int edgeSlope;
+
   count_t *countsInColumn;
 
 #ifdef RANGECHECK
@@ -561,13 +526,6 @@ static void createTextureCompositePatch(int id) {
         }
         post->slope = 0;
 
-        edgeSlope = getColumnEdgeSlope(oldPrevColumn, oldNextColumn, oldColumn->topdelta);
-        if (edgeSlope == 1) post->slope |= RDRAW_EDGESLOPE_TOP_UP;
-        else if (edgeSlope == -1) post->slope |= RDRAW_EDGESLOPE_TOP_DOWN;
-
-        edgeSlope = getColumnEdgeSlope(oldPrevColumn, oldNextColumn, oldColumn->topdelta+count);
-        if (edgeSlope == 1) post->slope |= RDRAW_EDGESLOPE_BOT_UP;
-        else if (edgeSlope == -1) post->slope |= RDRAW_EDGESLOPE_BOT_DOWN;
 
         // fill in the post's pixels
         for (y=0; y<count; y++) {

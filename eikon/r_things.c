@@ -355,7 +355,6 @@ void R_DrawMaskedColumn(
 
           dcvars->texturemid = basetexturemid - (post->topdelta<<FRACBITS);
 
-          dcvars->edgeslope = post->slope;
           // Drawn by either R_DrawColumn
           //  or (SHADOW) R_DrawFuzzColumn.
           colfunc (dcvars);
@@ -377,19 +376,9 @@ static void R_DrawVisSprite(vissprite_t *vis, int x1, int x2)
   const rpatch_t *patch = R_CachePatchNum(vis->patch+firstspritelump);
   R_DrawColumn_f colfunc;
   draw_column_vars_t dcvars;
-  enum draw_filter_type_e filter;
-  enum draw_filter_type_e filterz;
+
 
   R_SetDefaultDrawColumnVars(&dcvars);
-  if (vis->isplayersprite) {
-    dcvars.edgetype = drawvars.patch_edges;
-    filter = drawvars.filterpatch;
-    filterz = RDRAW_FILTER_POINT;
-  } else {
-    dcvars.edgetype = drawvars.sprite_edges;
-    filter = drawvars.filtersprite;
-    filterz = drawvars.filterz;
-  }
 
   dcvars.colormap = vis->colormap;
 
@@ -412,8 +401,7 @@ static void R_DrawVisSprite(vissprite_t *vis, int x1, int x2)
   dcvars.iscale = FixedDiv (FRACUNIT, vis->scale);
   dcvars.texturemid = vis->texturemid;
   frac = vis->startfrac;
-  if (filter == RDRAW_FILTER_LINEAR)
-    frac -= (FRACUNIT>>1);
+
   spryscale = vis->scale;
   sprtopscreen = centeryfrac - FixedMul(dcvars.texturemid,spryscale);
 

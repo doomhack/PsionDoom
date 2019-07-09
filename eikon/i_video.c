@@ -54,6 +54,7 @@
 #include "d_event.h"
 #include "i_joy.h"
 #include "i_video.h"
+#include "i_sound.h"
 #include "z_zone.h"
 #include "s_sound.h"
 #include "sounds.h"

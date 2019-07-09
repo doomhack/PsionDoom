@@ -2965,33 +2965,9 @@ enum {
 
 #define G_YC  44
 
-static const char *renderfilters[] = {"none", "point", "linear", "rounded"};
-static const char *edgetypes[] = {"jagged", "sloped"};
-
 setup_menu_t gen_settings3[] = { // General Settings screen2
 
   {"Renderer settings"     ,S_SKIP|S_TITLE, m_null, G_X, G_YB - 12},
-
-  {"Filter for walls", S_CHOICE, m_null, G_X,
-   G_YC + general_filterwall*8, {"filter_wall"}, 0, 0, NULL, renderfilters},
-
-  {"Filter for floors/ceilings", S_CHOICE, m_null, G_X,
-   G_YC + general_filterfloor*8, {"filter_floor"}, 0, 0, NULL, renderfilters},
-
-  {"Filter for sprites", S_CHOICE, m_null, G_X,
-   G_YC + general_filtersprite*8, {"filter_sprite"}, 0, 0, NULL, renderfilters},
-
-  {"Filter for patches", S_CHOICE, m_null, G_X,
-   G_YC + general_filterpatch*8, {"filter_patch"}, 0, 0, NULL, renderfilters},
-
-  {"Filter for lighting", S_CHOICE, m_null, G_X,
-   G_YC + general_filterz*8, {"filter_z"}, 0, 0, NULL, renderfilters},
-
-  {"Drawing of sprite edges", S_CHOICE, m_null, G_X,
-   G_YC + general_spriteedges*8, {"sprite_edges"}, 0, 0, NULL, edgetypes},
-
-  {"Drawing of patch edges", S_CHOICE, m_null, G_X,
-   G_YC + general_patchedges*8, {"patch_edges"}, 0, 0, NULL, edgetypes},
 
   {"Flashing HOM indicator", S_YESNO, m_null, G_X,
    G_YC + general_hom*8, {"flashing_hom"}},

@@ -317,11 +317,6 @@ static void R_RenderSegLoop (void)
 
           texturecolumn = rw_offset-FixedMul(finetangent[angle],rw_distance);
 
-          if (drawvars.filterwall == RDRAW_FILTER_LINEAR)
-            texturecolumn -= (FRACUNIT>>1);
-
-          //dcvars.texu = texturecolumn; // for filtering -- POPE
-          
 		  texturecolumn >>= FRACBITS;
 
           dcvars.colormap = R_ColourMap(rw_lightlevel,rw_scale);
