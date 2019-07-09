@@ -167,7 +167,6 @@ static void R_MapPlane(int y, int x1, int x2, draw_span_vars_t *dsvars)
       if (index >= MAXLIGHTZ )
         index = MAXLIGHTZ-1;
       dsvars->colormap = planezlight[index];
-      dsvars->nextcolormap = planezlight[index+1 >= MAXLIGHTZ ? MAXLIGHTZ-1 : index+1];
     }
   else
    {
@@ -177,15 +176,8 @@ static void R_MapPlane(int y, int x1, int x2, draw_span_vars_t *dsvars)
   dsvars->y = y;
   dsvars->x1 = x1;
   dsvars->x2 = x2;
-
-	if(y < (SCREENHEIGHT >> 1))
-	{
-		R_DrawSpanPlain(dsvars);
-	}
-	else
-	{
-		R_DrawSpan(dsvars);
-	}
+  
+  R_DrawSpan(dsvars);
 }
 
 //
@@ -344,8 +336,6 @@ static void R_DoDrawPlane(visplane_t *pl)
 {
 	register int x;
 	draw_column_vars_t dcvars;
-	
-	R_DrawColumn_f colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_STANDARD, drawvars.filterwall, drawvars.filterz);
 
 	R_SetDefaultDrawColumnVars(&dcvars);
 
@@ -408,11 +398,6 @@ static void R_DoDrawPlane(visplane_t *pl)
 			if (comp[comp_skymap] || !(dcvars.colormap = fixedcolormap))
 				dcvars.colormap = fullcolormap;          // killough 3/20/98
 			
-			dcvars.nextcolormap = dcvars.colormap; // for filtering -- POPE
-			
-			//dcvars.texturemid = skytexturemid;
-			dcvars.texheight = textureheight[skytexture]>>FRACBITS; // killough
-			
 			// proff 09/21/98: Changed for high-res
 			dcvars.iscale = FRACUNIT*200/viewheight;
 
@@ -424,9 +409,7 @@ static void R_DoDrawPlane(visplane_t *pl)
 				if ((dcvars.yl = pl->top[x]) != -1 && dcvars.yl <= (dcvars.yh = pl->bottom[x])) // dropoff overflow
 				{
 					dcvars.source = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x])^flip) >> ANGLETOSKYSHIFT);
-					dcvars.prevsource = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x-1])^flip) >> ANGLETOSKYSHIFT);
-					dcvars.nextsource = R_GetTextureColumn(tex_patch, ((an + xtoviewangle[x+1])^flip) >> ANGLETOSKYSHIFT);
-					colfunc(&dcvars);
+					R_DrawColumn(&dcvars);
 				}
 			}
 			

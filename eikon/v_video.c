@@ -42,7 +42,6 @@
 #include "w_wad.h"   /* needed for color translation lump lookup */
 #include "v_video.h"
 #include "i_video.h"
-#include "r_filter.h"
 #include "lprintf.h"
 
 // Each screen is [SCREENWIDTH*SCREENHEIGHT];
@@ -218,230 +217,258 @@ void V_Init (void)
 // (indeed, laziness of the people who wrote the 'clones' of the original V_DrawPatch
 //  means that their inner loops weren't so well optimised, so merging code may even speed them).
 //
-static void V_DrawMemPatch(int x, int y, int scrn, const rpatch_t *patch,
-        int cm, enum patch_translation_e flags)
+static void V_DrawMemPatch(int x, int y, int scrn, const rpatch_t *patch, int cm, enum patch_translation_e flags)
 {
-  const byte *trans;
+	const byte *trans;
+	
+	if (cm<CR_LIMIT)
+		trans=colrngs[cm];
+	else
+		trans=translationtables + 256*((cm-CR_LIMIT)-1);
+	
+	y -= patch->topoffset;
+	x -= patch->leftoffset;
+	
+	// CPhipps - auto-no-stretch if not high-res
+	if (flags & VPT_STRETCH)
+		if ((SCREENWIDTH==320) && (SCREENHEIGHT==200))
+			flags &= ~VPT_STRETCH;
+		
+		// CPhipps - null translation pointer => no translation
+		if (!trans)
+			flags &= ~VPT_TRANS;
 
-  if (cm<CR_LIMIT)
-    trans=colrngs[cm];
-  else
-    trans=translationtables + 256*((cm-CR_LIMIT)-1);
-  y -= patch->topoffset;
-  x -= patch->leftoffset;
+		if (!(flags & VPT_STRETCH))
+		{
+			int             col;
+			byte           *desttop = screens[scrn].data+y*screens[scrn].byte_pitch+x*V_GetPixelDepth();
+			unsigned int    w = patch->width;
+			
+			if (y<0 || y+patch->height > ((flags & VPT_STRETCH) ? 200 :  SCREENHEIGHT))
+			{
+				// killough 1/19/98: improved error message:
+				lprintf(LO_WARN, "V_DrawMemPatch8: Patch (%d,%d)-(%d,%d) exceeds LFB in vertical direction (horizontal is clipped)\n"
+					"Bad V_DrawMemPatch8 (flags=%u)", x, y, x+patch->width, y+patch->height, flags);
+				return;
+			}
 
-  // CPhipps - auto-no-stretch if not high-res
-  if (flags & VPT_STRETCH)
-    if ((SCREENWIDTH==320) && (SCREENHEIGHT==200))
-      flags &= ~VPT_STRETCH;
+			w--; // CPhipps - note: w = width-1 now, speeds up flipping
+			
+			for (col=0 ; (unsigned int)col<=w ; desttop++, col++, x++)
+			{
+				int i;
+				const int colindex = (flags & VPT_FLIP) ? (w - col) : (col);
+				const rcolumn_t *column = R_GetPatchColumn(patch, colindex);
+				
+				if (x < 0)
+					continue;
+				
+				if (x >= SCREENWIDTH)
+					break;
+				
+				// step through the posts in a column
+				for (i=0; i<column->numPosts; i++)
+				{
+					const rpost_t *post = &column->posts[i];
+					// killough 2/21/98: Unrolled and performance-tuned
+					
+					const byte *source = column->pixels + post->topdelta;
+					byte *dest = desttop + post->topdelta*screens[scrn].byte_pitch;
+					int count = post->length;
 
-  // CPhipps - null translation pointer => no translation
-  if (!trans)
-    flags &= ~VPT_TRANS;
+					if (!(flags & VPT_TRANS))
+					{
+						if ((count-=4)>=0)
+						{
+							do
+							{
+								register byte s0,s1;
+								s0 = source[0];
+								s1 = source[1];
+								
+								dest[0] = s0;
+								dest[screens[scrn].byte_pitch] = s1;
+								dest += screens[scrn].byte_pitch*2;
+								s0 = source[2];
+								s1 = source[3];
+								source += 4;
+								dest[0] = s0;
+								dest[screens[scrn].byte_pitch] = s1;
+								dest += screens[scrn].byte_pitch*2;
+							} while ((count-=4)>=0);
+						}
+							
+						if (count+=4)
+						{
+							do
+							{
+								*dest = *source++;
+								dest += screens[scrn].byte_pitch;
+							} while (--count);
+						}
+					}
+					else
+					{
+						// CPhipps - merged translation code here
+						if ((count-=4)>=0)
+						{
+							do
+							{
+								register byte s0,s1;
+								s0 = source[0];
+								s1 = source[1];
+								s0 = trans[s0];
+								s1 = trans[s1];
+								dest[0] = s0;
+								dest[screens[scrn].byte_pitch] = s1;
+								dest += screens[scrn].byte_pitch*2;
+								s0 = source[2];
+								s1 = source[3];
+								s0 = trans[s0];
+								s1 = trans[s1];
+								source += 4;
+								dest[0] = s0;
+								dest[screens[scrn].byte_pitch] = s1;
+								dest += screens[scrn].byte_pitch*2;
+							} while ((count-=4)>=0);
+						}
+						
+						if (count+=4)
+						{
+							do
+							{
+								*dest = trans[*source++];
+								dest += screens[scrn].byte_pitch;
+							} while (--count);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			// CPhipps - move stretched patch drawing code here
+			//         - reformat initialisers, move variables into inner blocks
+			
+			int   col;
+			int   w = (patch->width << 16) - 1; // CPhipps - -1 for faster flipping
+			int   left, right, top, bottom;
+			int   DX  = (SCREENWIDTH<<16)  / 320;
+			int   DXI = (320<<16)          / SCREENWIDTH;
+			int   DY  = (SCREENHEIGHT<<16) / 200;
+			int   DYI = (200<<16)          / SCREENHEIGHT;
 
-  if (!(flags & VPT_STRETCH))
-  {
-    int             col;
-    byte           *desttop = screens[scrn].data+y*screens[scrn].byte_pitch+x*V_GetPixelDepth();
-    unsigned int    w = patch->width;
+			R_DrawColumn_f colfunc;
+			draw_column_vars_t dcvars;
+			draw_vars_t olddrawvars = drawvars;
 
-    if (y<0 || y+patch->height > ((flags & VPT_STRETCH) ? 200 :  SCREENHEIGHT))
-	{
-      // killough 1/19/98: improved error message:
-      lprintf(LO_WARN, "V_DrawMemPatch8: Patch (%d,%d)-(%d,%d) exceeds LFB in vertical direction (horizontal is clipped)\n"
-              "Bad V_DrawMemPatch8 (flags=%u)", x, y, x+patch->width, y+patch->height, flags);
-      return;
-    }
+			R_SetDefaultDrawColumnVars(&dcvars);
+			
+			drawvars.byte_topleft = screens[scrn].data;
+			drawvars.byte_pitch = screens[scrn].byte_pitch;
+			
+			if (!(flags & VPT_STRETCH))
+			{
+				DX = 1 << 16;
+				DXI = 1 << 16;
+				DY = 1 << 16;
+				DYI = 1 << 16;
+			}
 
-    w--; // CPhipps - note: w = width-1 now, speeds up flipping
+			if (flags & VPT_TRANS)
+			{
+				colfunc = R_DrawTranslatedColumn;
+				dcvars.translation = trans;
+			}
+			else
+			{
+				colfunc = R_DrawColumn;
+			}
 
-    for (col=0 ; (unsigned int)col<=w ; desttop++, col++, x++) {
-      int i;
-      const int colindex = (flags & VPT_FLIP) ? (w - col) : (col);
-      const rcolumn_t *column = R_GetPatchColumn(patch, colindex);
+			left = ( x * DX ) >> FRACBITS;
+			top = ( y * DY ) >> FRACBITS;
+			right = ( (x + patch->width) * DX ) >> FRACBITS;
+			bottom = ( (y + patch->height) * DY ) >> FRACBITS;
+			
+			dcvars.iscale = DYI;
+			dcvars.edgetype = drawvars.patch_edges;
 
-      if (x < 0)
-        continue;
-      if (x >= SCREENWIDTH)
-        break;
+			if (drawvars.filterpatch == RDRAW_FILTER_LINEAR)
+			{
+				// bias the texture u coordinate
+				if (patch->isNotTileable)
+					col = -(FRACUNIT>>1);
+				else
+					col = (patch->width<<FRACBITS)-(FRACUNIT>>1);
+			}
+			else
+			{
+				col = 0;
+			}
 
-      // step through the posts in a column
-      for (i=0; i<column->numPosts; i++) {
-        const rpost_t *post = &column->posts[i];
-        // killough 2/21/98: Unrolled and performance-tuned
+			for (dcvars.x=left; dcvars.x<right; dcvars.x++, col+=DXI)
+			{
+				int i;
+				const int colindex = (flags & VPT_FLIP) ? ((w - col)>>16): (col>>16);
+				const rcolumn_t *column = R_GetPatchColumn(patch, colindex);
 
-        const byte *source = column->pixels + post->topdelta;
-        byte *dest = desttop + post->topdelta*screens[scrn].byte_pitch;
-        int count = post->length;
+				// ignore this column if it's to the left of our clampRect
+				if (dcvars.x < 0)
+					continue;
+				if (dcvars.x >= SCREENWIDTH)
+					break;
 
-        if (!(flags & VPT_TRANS)) {
-          if ((count-=4)>=0)
-            do {
-              register byte s0,s1;
-              s0 = source[0];
-              s1 = source[1];
-              dest[0] = s0;
-              dest[screens[scrn].byte_pitch] = s1;
-              dest += screens[scrn].byte_pitch*2;
-              s0 = source[2];
-              s1 = source[3];
-              source += 4;
-              dest[0] = s0;
-              dest[screens[scrn].byte_pitch] = s1;
-              dest += screens[scrn].byte_pitch*2;
-            } while ((count-=4)>=0);
-          if (count+=4)
-            do {
-              *dest = *source++;
-              dest += screens[scrn].byte_pitch;
-            } while (--count);
-        } else {
-          // CPhipps - merged translation code here
-          if ((count-=4)>=0)
-            do {
-              register byte s0,s1;
-              s0 = source[0];
-              s1 = source[1];
-              s0 = trans[s0];
-              s1 = trans[s1];
-              dest[0] = s0;
-              dest[screens[scrn].byte_pitch] = s1;
-              dest += screens[scrn].byte_pitch*2;
-              s0 = source[2];
-              s1 = source[3];
-              s0 = trans[s0];
-              s1 = trans[s1];
-              source += 4;
-              dest[0] = s0;
-              dest[screens[scrn].byte_pitch] = s1;
-              dest += screens[scrn].byte_pitch*2;
-            } while ((count-=4)>=0);
-          if (count+=4)
-            do {
-              *dest = trans[*source++];
-              dest += screens[scrn].byte_pitch;
-            } while (--count);
-        }
-      }
-    }
-  }
-  else {
-    // CPhipps - move stretched patch drawing code here
-    //         - reformat initialisers, move variables into inner blocks
+			  // step through the posts in a column
+			  for (i=0; i<column->numPosts; i++)
+			  {
+				  const rpost_t *post = &column->posts[i];
+				  int yoffset = 0;
+				  
+				  dcvars.yl = (((y + post->topdelta) * DY)>>FRACBITS);
+				  dcvars.yh = (((y + post->topdelta + post->length) * DY - (FRACUNIT>>1))>>FRACBITS);
+				  dcvars.edgeslope = post->slope;
+				  
+				  if ((dcvars.yh < 0) || (dcvars.yh < top))
+					  continue;
+				  if ((dcvars.yl >= SCREENHEIGHT) || (dcvars.yl >= bottom))
+					  continue;
 
-    int   col;
-    int   w = (patch->width << 16) - 1; // CPhipps - -1 for faster flipping
-    int   left, right, top, bottom;
-    int   DX  = (SCREENWIDTH<<16)  / 320;
-    int   DXI = (320<<16)          / SCREENWIDTH;
-    int   DY  = (SCREENHEIGHT<<16) / 200;
-    int   DYI = (200<<16)          / SCREENHEIGHT;
-    R_DrawColumn_f colfunc;
-    draw_column_vars_t dcvars;
-    draw_vars_t olddrawvars = drawvars;
+				  if (dcvars.yh >= bottom)
+				  {
+					  dcvars.yh = bottom-1;
+					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_BOT_MASK;
+				  }
 
-    R_SetDefaultDrawColumnVars(&dcvars);
+				  if (dcvars.yh >= SCREENHEIGHT)
+				  {
+					  dcvars.yh = SCREENHEIGHT-1;
+					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_BOT_MASK;
+				  }
 
-    drawvars.byte_topleft = screens[scrn].data;
-    drawvars.byte_pitch = screens[scrn].byte_pitch;
+				  if (dcvars.yl < 0)
+				  {
+					  yoffset = 0-dcvars.yl;
+					  dcvars.yl = 0;
+					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_TOP_MASK;
+				  }
 
-    if (!(flags & VPT_STRETCH)) {
-      DX = 1 << 16;
-      DXI = 1 << 16;
-      DY = 1 << 16;
-      DYI = 1 << 16;
-    }
+				  if (dcvars.yl < top)
+				  {
+					  yoffset = top-dcvars.yl;
+					  dcvars.yl = top;
+					  dcvars.edgeslope &= ~RDRAW_EDGESLOPE_TOP_MASK;
+				  }
 
-    if (flags & VPT_TRANS) {
-      colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_TRANSLATED, drawvars.filterpatch, RDRAW_FILTER_NONE);
-      dcvars.translation = trans;
-    } else {
-      colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_STANDARD, drawvars.filterpatch, RDRAW_FILTER_NONE);
-    }
-
-    left = ( x * DX ) >> FRACBITS;
-    top = ( y * DY ) >> FRACBITS;
-    right = ( (x + patch->width) * DX ) >> FRACBITS;
-    bottom = ( (y + patch->height) * DY ) >> FRACBITS;
-
-    dcvars.texheight = patch->height;
-    dcvars.iscale = DYI;
-    dcvars.drawingmasked = MAX(patch->width, patch->height) > 8;
-    dcvars.edgetype = drawvars.patch_edges;
-
-    if (drawvars.filterpatch == RDRAW_FILTER_LINEAR) {
-      // bias the texture u coordinate
-      if (patch->isNotTileable)
-        col = -(FRACUNIT>>1);
-      else
-        col = (patch->width<<FRACBITS)-(FRACUNIT>>1);
-    }
-    else {
-      col = 0;
-    }
-
-    for (dcvars.x=left; dcvars.x<right; dcvars.x++, col+=DXI) {
-      int i;
-      const int colindex = (flags & VPT_FLIP) ? ((w - col)>>16): (col>>16);
-      const rcolumn_t *column = R_GetPatchColumn(patch, colindex);
-      const rcolumn_t *prevcolumn = R_GetPatchColumn(patch, colindex-1);
-      const rcolumn_t *nextcolumn = R_GetPatchColumn(patch, colindex+1);
-
-      // ignore this column if it's to the left of our clampRect
-      if (dcvars.x < 0)
-        continue;
-      if (dcvars.x >= SCREENWIDTH)
-        break;
-
-      dcvars.texu = ((flags & VPT_FLIP) ? ((patch->width<<FRACBITS)-col) : col) % (patch->width<<FRACBITS);
-
-      // step through the posts in a column
-      for (i=0; i<column->numPosts; i++) {
-        const rpost_t *post = &column->posts[i];
-        int yoffset = 0;
-
-        dcvars.yl = (((y + post->topdelta) * DY)>>FRACBITS);
-        dcvars.yh = (((y + post->topdelta + post->length) * DY - (FRACUNIT>>1))>>FRACBITS);
-        dcvars.edgeslope = post->slope;
-
-        if ((dcvars.yh < 0) || (dcvars.yh < top))
-          continue;
-        if ((dcvars.yl >= SCREENHEIGHT) || (dcvars.yl >= bottom))
-          continue;
-
-        if (dcvars.yh >= bottom) {
-          dcvars.yh = bottom-1;
-          dcvars.edgeslope &= ~RDRAW_EDGESLOPE_BOT_MASK;
-        }
-        if (dcvars.yh >= SCREENHEIGHT) {
-          dcvars.yh = SCREENHEIGHT-1;
-          dcvars.edgeslope &= ~RDRAW_EDGESLOPE_BOT_MASK;
-        }
-
-        if (dcvars.yl < 0) {
-          yoffset = 0-dcvars.yl;
-          dcvars.yl = 0;
-          dcvars.edgeslope &= ~RDRAW_EDGESLOPE_TOP_MASK;
-        }
-        if (dcvars.yl < top) {
-          yoffset = top-dcvars.yl;
-          dcvars.yl = top;
-          dcvars.edgeslope &= ~RDRAW_EDGESLOPE_TOP_MASK;
-        }
-
-        dcvars.source = column->pixels + post->topdelta + yoffset;
-        dcvars.prevsource = prevcolumn ? prevcolumn->pixels + post->topdelta + yoffset: dcvars.source;
-        dcvars.nextsource = nextcolumn ? nextcolumn->pixels + post->topdelta + yoffset: dcvars.source;
-
-        dcvars.texturemid = -((dcvars.yl-centery)*dcvars.iscale);
-
-        colfunc(&dcvars);
-      }
-    }
-
-    R_ResetColumnBuffer();
-    drawvars = olddrawvars;
-  }
+				  dcvars.source = column->pixels + post->topdelta + yoffset;
+				  
+				  dcvars.texturemid = -((dcvars.yl-centery)*dcvars.iscale);
+				  
+				  colfunc(&dcvars);
+			  }
+		}
+			
+		drawvars = olddrawvars;
+	}
 }
 
 // CPhipps - some simple, useful wrappers for that function, for drawing patches from wads
@@ -457,49 +484,7 @@ static void FUNC_V_DrawNumPatch(int x, int y, int scrn, int lump,
   R_UnlockPatchNum(lump);
 }
 
-
-static unsigned short *Palettes15 = NULL;
-static unsigned short *Palettes16 = NULL;
-static unsigned int *Palettes32 = NULL;
 static int currentPaletteIndex = 0;
-
-//
-// V_UpdateTrueColorPalette
-//
-void V_UpdateTrueColorPalette(video_mode_t mode)
-{
-  int i, w, p;
-  byte r,g,b;
-  int nr,ng,nb;
-  float t;
-  int paletteNum = currentPaletteIndex;
-  static int usegammaOnLastPaletteGeneration = -1;
-  
-  int pplump = W_GetNumForName("PLAYPAL");
-  int gtlump = (W_CheckNumForName)("GAMMATBL",ns_prboom);
-  const byte *pal = W_CacheLumpNum(pplump);
-  // opengl doesn't use the gamma
-  const byte *const gtable = 
-    (const byte *)W_CacheLumpNum(gtlump) + (256*(usegamma))
-  ;
-
-  int numPals = W_LumpLength(pplump) / (3*256);
-  const float dontRoundAbove = 220;
-  float roundUpR, roundUpG, roundUpB;
-  
-  if (usegammaOnLastPaletteGeneration != usegamma) {
-    if (Palettes15) free(Palettes15);
-    if (Palettes16) free(Palettes16);
-    if (Palettes32) free(Palettes32);
-    Palettes15 = NULL;
-    Palettes16 = NULL;
-    Palettes32 = NULL;
-    usegammaOnLastPaletteGeneration = usegamma;      
-  }
-     
-  W_UnlockLumpNum(pplump);
-  W_UnlockLumpNum(gtlump);
-}
 
 //
 // V_SetPalette
@@ -533,7 +518,6 @@ static void NULL_FillRect(int scrn, int x, int y, int width, int height, byte co
 static void NULL_CopyRect(int srcx, int srcy, int srcscrn, int width, int height, int destx, int desty, int destscrn, enum patch_translation_e flags) {}
 static void NULL_DrawBackground(const char *flatname, int n) {}
 static void NULL_DrawNumPatch(int x, int y, int scrn, int lump, int cm, enum patch_translation_e flags) {}
-static void NULL_DrawBlock(int x, int y, int scrn, int width, int height, const byte *src, enum patch_translation_e flags) {}
 static void NULL_PlotPixel(int scrn, int x, int y, byte color) {}
 static void NULL_DrawLine(fline_t* fl, int color) {}
 
@@ -561,8 +545,6 @@ void V_InitMode(video_mode_t mode)
   V_PlotPixel = V_PlotPixel8;
   V_DrawLine = WRAP_V_DrawLine;
   current_videomode = VID_MODE8;
-
-  R_FilterInit();
 }
 
 //

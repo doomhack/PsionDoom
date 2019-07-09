@@ -376,10 +376,6 @@ SOURCE=\PSIONDOOM\EIKON\R_draw.c
 # End Source File
 # Begin Source File
 
-SOURCE=\PSIONDOOM\EIKON\R_filter.c
-# End Source File
-# Begin Source File
-
 SOURCE=\PSIONDOOM\EIKON\R_fps.c
 # End Source File
 # Begin Source File
@@ -745,26 +741,6 @@ SOURCE=\PSIONDOOM\EIKON\R_demo.h
 # Begin Source File
 
 SOURCE=\PSIONDOOM\EIKON\R_draw.h
-# End Source File
-# Begin Source File
-
-SOURCE=\PSIONDOOM\EIKON\R_drawcolpipeline.inl
-# End Source File
-# Begin Source File
-
-SOURCE=\PSIONDOOM\EIKON\R_drawcolumn.inl
-# End Source File
-# Begin Source File
-
-SOURCE=\PSIONDOOM\EIKON\R_drawflush.inl
-# End Source File
-# Begin Source File
-
-SOURCE=\PSIONDOOM\EIKON\R_drawspan.inl
-# End Source File
-# Begin Source File
-
-SOURCE=\PSIONDOOM\EIKON\R_filter.h
 # End Source File
 # Begin Source File
 

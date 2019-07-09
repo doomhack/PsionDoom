@@ -6,13 +6,29 @@
 --------------------Configuration: PSIONDOOM - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP688.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSPE5.tmp" with contents
 [
 /nologo /Zp4 /MDd /W4 /ZI /Od /X /I "\PSIONDOOM\EIKON" /I "\PSIONDOOM\EIKON\LIBTIMIDITY" /I "\EPOC32\INCLUDE" /I "\EPOC32\INCLUDE\LIBC" /D "__SYMBIAN32__" /D "__PSISOFT32__" /D "__VC32__" /D "__WINS__" /D "__DLL__" /D "_DEBUG" /FR"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /Fo"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /Fd"\EPOC32\BUILD\PSIONDOOM\WINSD\DEB/" /FD /c 
+"C:\PSIONDOOM\EIKON\D_main.c"
+"C:\PSIONDOOM\EIKON\G_game.c"
+"C:\PSIONDOOM\EIKON\Hu_lib.c"
+"C:\PSIONDOOM\EIKON\I_video.c"
+"C:\PSIONDOOM\EIKON\M_misc.c"
+"C:\PSIONDOOM\EIKON\P_setup.c"
+"C:\PSIONDOOM\EIKON\R_bsp.c"
+"C:\PSIONDOOM\EIKON\R_data.c"
 "C:\PSIONDOOM\EIKON\R_draw.c"
+"C:\PSIONDOOM\EIKON\R_main.c"
+"C:\PSIONDOOM\EIKON\R_patch.c"
+"C:\PSIONDOOM\EIKON\R_plane.c"
+"C:\PSIONDOOM\EIKON\R_segs.c"
+"C:\PSIONDOOM\EIKON\R_things.c"
+"C:\PSIONDOOM\EIKON\St_stuff.c"
+"C:\PSIONDOOM\EIKON\V_video.c"
+"C:\PSIONDOOM\EIKON\Wi_stuff.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP688.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP689.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSPE5.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSPE6.tmp" with contents
 [
 \EPOC32\RELEASE\WINS\DEB\EDLL.OBJ \EPOC32\RELEASE\WINS\DEB\euser.lib \EPOC32\RELEASE\WINS\DEB\fbscli.lib \EPOC32\RELEASE\WINS\DEB\ws32.lib \EPOC32\RELEASE\WINS\DEB\estlib.lib msvcrt.lib /nologo /entry:"_E32Dll" /subsystem:windows /dll /incremental:yes /pdb:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.pdb" /debug /machine:IX86 /nodefaultlib /out:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.dll" /implib:"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.lib" /WARN:3 
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Am_map.obj
@@ -76,7 +92,6 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP689.tmp" with c
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_data.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_demo.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_draw.obj
-\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_filter.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_fps.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_main.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_patch.obj
@@ -102,31 +117,346 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP689.tmp" with c
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_bmalloc.obj
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_zone.obj
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP689.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSPE6.tmp"
 <h3>Output Window</h3>
 Compiling...
-R_draw.c
-c:\psiondoom\eikon\r_drawcolumn.inl(148) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(147) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(148) : warning C4189: 'translation' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(147) : warning C4189: 'colormap' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_drawcolumn.inl(191) : warning C4189: 'nextfrac' : local variable is initialized but not referenced
-c:\psiondoom\eikon\r_draw.c(372) : warning C4244: 'initializing' : conversion from 'int ' to 'unsigned char ', possible loss of data
-c:\psiondoom\eikon\r_draw.c(377) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
-c:\psiondoom\eikon\r_draw.c(391) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
-c:\psiondoom\eikon\r_draw.c(439) : warning C4090: 'function' : different 'const' qualifiers
-c:\psiondoom\eikon\r_draw.c(439) : warning C4022: 'memset' : pointer mismatch for actual parameter 1
-c:\psiondoom\eikon\r_draw.c(566) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+D_main.c
+c:\psiondoom\eikon\d_main.c(1711) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
         c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
-c:\psiondoom\eikon\r_draw.c(566) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+c:\psiondoom\eikon\d_main.c(1711) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
         c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
-c:\psiondoom\eikon\r_draw.c(566) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+c:\psiondoom\eikon\d_main.c(1711) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
         c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+G_game.c
+c:\psiondoom\eikon\g_game.c(319) : warning C4310: cast truncates constant value
+c:\psiondoom\eikon\g_game.c(339) : warning C4244: '-=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(341) : warning C4244: '+=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(343) : warning C4244: '-=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(345) : warning C4244: '+=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(503) : warning C4244: '-=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(516) : warning C4244: '+=' : conversion from 'int ' to 'char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(517) : warning C4244: '+=' : conversion from 'int ' to 'char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(522) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(843) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(870) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(877) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1164) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1499) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1573) : warning C4057: 'function' : 'const char *' differs in indirection to slightly different base types from 'unsigned char *'
+c:\psiondoom\eikon\g_game.c(1598) : warning C4057: 'function' : 'const char *' differs in indirection to slightly different base types from 'unsigned char *'
+c:\psiondoom\eikon\g_game.c(1601) : warning C4057: 'function' : 'const char *' differs in indirection to slightly different base types from 'unsigned char *'
+c:\psiondoom\eikon\g_game.c(1612) : warning C4057: 'function' : 'const char *' differs in indirection to slightly different base types from 'unsigned char *'
+c:\psiondoom\eikon\g_game.c(1633) : warning C4057: '=' : 'unsigned char *' differs in indirection to slightly different base types from 'char *'
+c:\psiondoom\eikon\g_game.c(1700) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1710) : warning C4100: 'line' : unreferenced formal parameter
+c:\psiondoom\eikon\g_game.c(1710) : warning C4100: 'file' : unreferenced formal parameter
+c:\psiondoom\eikon\g_game.c(1738) : warning C4100: 'size' : unreferenced formal parameter
+c:\psiondoom\eikon\g_game.c(1794) : warning C4057: 'function' : 'char *' differs in indirection to slightly different base types from 'unsigned char *'
+c:\psiondoom\eikon\g_game.c(1795) : warning C4057: 'function' : 'const char *' differs in indirection to slightly different base types from 'unsigned char *'
+c:\psiondoom\eikon\g_game.c(1803) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1805) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1806) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1807) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1810) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1815) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1832) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(1960) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\g_game.c(2204) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2207) : warning C4244: '=' : conversion from 'unsigned int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2216) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2233) : warning C4244: '=' : conversion from 'int ' to 'char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2236) : warning C4244: '=' : conversion from 'int ' to 'char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2237) : warning C4244: '=' : conversion from 'int ' to 'char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2244) : warning C4057: '=' : 'const unsigned char *' differs in indirection to slightly different base types from 'char *'
+c:\psiondoom\eikon\g_game.c(2318) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2320) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2322) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2324) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2328) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2331) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2332) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2333) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2335) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2345) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2356) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2357) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2359) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2361) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2363) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2365) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2373) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2378) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2381) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2522) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2523) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2524) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2525) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2526) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2531) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2561) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2562) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2563) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2564) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2565) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2570) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2580) : warning C4244: '=' : conversion from 'const int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2581) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2582) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2583) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2584) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2585) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2586) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2587) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2588) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2590) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\g_game.c(2826) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\g_game.c(2960) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\g_game.c(2960) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\g_game.c(2960) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+c:\psiondoom\eikon\g_game.c(2960) : warning C4514: 'Z_BCalloc' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\z_bmalloc.h(49) : see declaration of 'Z_BCalloc'
+Hu_lib.c
+c:\psiondoom\eikon\hu_lib.c(171) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\hu_lib.c(768) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\hu_lib.c(768) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\hu_lib.c(768) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+c:\psiondoom\eikon\hu_lib.c(768) : warning C4505: 'HUlib_init' : unreferenced local function has been removed
+        c:\psiondoom\eikon\hu_lib.c(53) : see declaration of 'HUlib_init'
+c:\psiondoom\eikon\hu_lib.c(768) : warning C4505: 'HUlib_eraseLineFromIText' : unreferenced local function has been removed
+        c:\psiondoom\eikon\hu_lib.c(674) : see declaration of 'HUlib_eraseLineFromIText'
+I_video.c
+c:\psiondoom\eikon\i_video.c(98) : warning C4013: 'I_UpdateMusic' undefined; assuming extern returning int
+c:\psiondoom\eikon\i_video.c(195) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\i_video.c(312) : warning C4100: 'modestr' : unreferenced formal parameter
+c:\psiondoom\eikon\i_video.c(347) : warning C4100: 'height' : unreferenced formal parameter
+c:\psiondoom\eikon\i_video.c(347) : warning C4100: 'width' : unreferenced formal parameter
+c:\psiondoom\eikon\i_video.c(359) : warning C4100: 'fname' : unreferenced formal parameter
+c:\psiondoom\eikon\i_video.c(363) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\i_video.c(363) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\i_video.c(363) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+M_misc.c
+c:\psiondoom\eikon\m_misc.c(292) : warning C4057: 'initializing' : 'int *' differs in indirection to slightly different base types from 'unsigned int *'
+c:\psiondoom\eikon\m_misc.c(294) : warning C4057: 'initializing' : 'int *' differs in indirection to slightly different base types from 'unsigned int *'
+c:\psiondoom\eikon\m_misc.c(1002) : warning C4013: 'access' undefined; assuming extern returning int
+c:\psiondoom\eikon\m_misc.c(1021) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\m_misc.c(1021) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\m_misc.c(1021) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+P_setup.c
+c:\psiondoom\eikon\p_setup.c(170) : warning C4100: 'gl_lumpnum' : unreferenced formal parameter
+c:\psiondoom\eikon\p_setup.c(534) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(535) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(763) : warning C4100: 'lump' : unreferenced formal parameter
+c:\psiondoom\eikon\p_setup.c(834) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(837) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(840) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(848) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(849) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(850) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(854) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(855) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(856) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(1287) : warning C4244: '=' : conversion from 'unsigned int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\p_setup.c(1501) : warning C4100: 'skill' : unreferenced formal parameter
+c:\psiondoom\eikon\p_setup.c(1501) : warning C4100: 'playermask' : unreferenced formal parameter
+c:\psiondoom\eikon\p_setup.c(1678) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\p_setup.c(1678) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_bsp.c
+c:\psiondoom\eikon\r_bsp.c(431) : warning C4245: '=' : conversion from 'const int ' to 'unsigned int ', signed/unsigned mismatch
+c:\psiondoom\eikon\r_bsp.c(571) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\r_bsp.c(571) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\r_bsp.c(571) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_data.c
+c:\psiondoom\eikon\r_data.c(536) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_data.c(543) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_data.c(746) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\r_data.c(746) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_draw.c
+c:\psiondoom\eikon\r_draw.c(170) : warning C4244: 'initializing' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(175) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(189) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_draw.c(504) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\r_draw.c(504) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\r_draw.c(504) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_main.c
+c:\psiondoom\eikon\r_main.c(569) : warning C4244: 'initializing' : conversion from 'const int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_main.c(587) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_patch.c
+c:\psiondoom\eikon\r_patch.c(216) : warning C4244: '=' : conversion from 'int ' to 'unsigned char ', possible loss of data
+c:\psiondoom\eikon\r_patch.c(306) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\r_patch.c(621) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\r_patch.c(787) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\r_patch.c(787) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\r_patch.c(787) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_plane.c
+c:\psiondoom\eikon\r_plane.c(465) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+R_segs.c
+R_things.c
+c:\psiondoom\eikon\r_things.c(109) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\r_things.c(120) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\r_things.c(324) : warning C4100: 'patch' : unreferenced formal parameter
+c:\psiondoom\eikon\r_things.c(373) : warning C4100: 'x2' : unreferenced formal parameter
+c:\psiondoom\eikon\r_things.c(373) : warning C4100: 'x1' : unreferenced formal parameter
+c:\psiondoom\eikon\r_things.c(1021) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+St_stuff.c
+c:\psiondoom\eikon\st_stuff.c(859) : warning C4100: 'doload' : unreferenced formal parameter
+c:\psiondoom\eikon\st_stuff.c(1153) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\st_stuff.c(1153) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\st_stuff.c(1153) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+c:\psiondoom\eikon\st_stuff.c(1153) : warning C4505: 'ST_unloadData' : unreferenced local function has been removed
+        c:\psiondoom\eikon\st_stuff.c(938) : see declaration of 'ST_unloadData'
+V_video.c
+c:\psiondoom\eikon\v_video.c(517) : warning C4100: 'colour' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(517) : warning C4100: 'height' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(517) : warning C4100: 'width' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(517) : warning C4100: 'y' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(517) : warning C4100: 'x' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(517) : warning C4100: 'scrn' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'flags' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'destscrn' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'desty' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'destx' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'height' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'width' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'srcscrn' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'srcy' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(518) : warning C4100: 'srcx' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(519) : warning C4100: 'n' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(519) : warning C4100: 'flatname' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(520) : warning C4100: 'flags' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(520) : warning C4100: 'cm' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(520) : warning C4100: 'lump' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(520) : warning C4100: 'scrn' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(520) : warning C4100: 'y' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(520) : warning C4100: 'x' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(521) : warning C4100: 'color' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(521) : warning C4100: 'y' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(521) : warning C4100: 'x' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(521) : warning C4100: 'scrn' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(522) : warning C4100: 'color' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(522) : warning C4100: 'fl' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(537) : warning C4100: 'mode' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(560) : warning C4100: 'mode' : unreferenced formal parameter
+c:\psiondoom\eikon\v_video.c(677) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\v_video.c(693) : warning C4127: conditional expression is constant
+c:\psiondoom\eikon\v_video.c(707) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\v_video.c(707) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\v_video.c(707) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+Wi_stuff.c
+c:\psiondoom\eikon\wi_stuff.c(434) : warning C4100: 'ev' : unreferenced formal parameter
+c:\psiondoom\eikon\wi_stuff.c(1089) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1091) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1131) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1336) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1337) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1341) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1343) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1364) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1389) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1417) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1443) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1591) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1592) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1596) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1614) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1628) : warning C4244: '=' : conversion from 'int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1646) : warning C4244: '=' : conversion from 'const int ' to 'short ', possible loss of data
+c:\psiondoom\eikon\wi_stuff.c(1969) : warning C4514: 'FixedMul' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(70) : see declaration of 'FixedMul'
+c:\psiondoom\eikon\wi_stuff.c(1969) : warning C4514: 'FixedDiv' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(88) : see declaration of 'FixedDiv'
+c:\psiondoom\eikon\wi_stuff.c(1969) : warning C4514: 'FixedMod' : unreferenced inline function has been removed
+        c:\psiondoom\eikon\m_fixed.h(99) : see declaration of 'FixedMod'
+Generating Code...
+c:\psiondoom\eikon\r_things.c(222) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\r_plane.c(218) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\r_plane.c(398) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\r_plane.c(163) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\r_bsp.c(85) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\r_bsp.c(89) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\p_setup.c(1490) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\m_misc.c(88) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\m_misc.c(112) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\m_misc.c(938) : warning C4701: local variable 'parm' may be used without having been initialized
+c:\psiondoom\eikon\i_video.c(325) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\g_game.c(2095) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\g_game.c(2215) : warning C4701: local variable 'at' may be used without having been initialized
+c:\psiondoom\eikon\g_game.c(2296) : warning C4701: local variable 'rc' may be used without having been initialized
+c:\psiondoom\eikon\g_game.c(2507) : warning C4701: local variable 'v' may be used without having been initialized
+c:\psiondoom\eikon\g_game.c(2548) : warning C4701: local variable 'v' may be used without having been initialized
+c:\psiondoom\eikon\g_game.c(2559) : warning C4701: local variable 'c' may be used without having been initialized
+c:\psiondoom\eikon\d_main.c(216) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1241) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1270) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1276) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1283) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1290) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1295) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1295) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1345) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1349) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1353) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1356) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1364) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1367) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1374) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1458) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1467) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1468) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1482) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1558) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1559) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1567) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1572) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1579) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1584) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1592) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1600) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(777) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(603) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(696) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1024) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1034) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1044) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1107) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1111) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1119) : warning C4706: assignment within conditional expression
+c:\psiondoom\eikon\d_main.c(1123) : warning C4706: assignment within conditional expression
 Linking...
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP68A.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSPE7.tmp" with contents
 [
 /nologo /o"\EPOC32\RELEASE\WINS\DEB/PSIONDOOM.bsc" 
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Am_map.sbr
@@ -190,7 +520,6 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP68A.tmp" with c
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_data.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_demo.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_draw.sbr
-\EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_filter.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_fps.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_main.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\R_patch.sbr
@@ -215,14 +544,14 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP68A.tmp" with c
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Wi_stuff.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_bmalloc.sbr
 \EPOC32\BUILD\PSIONDOOM\WINSD\DEB\Z_zone.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSP68A.tmp"
+Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\1\RSPE7.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 
 
 
 <h3>Results</h3>
-PSIONDOOM.dll - 0 error(s), 16 warning(s)
+PSIONDOOM.dll - 0 error(s), 273 warning(s)
 </pre>
 </body>
 </html>

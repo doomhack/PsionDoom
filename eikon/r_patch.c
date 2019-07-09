@@ -161,7 +161,8 @@ static int getPatchIsNotTileable(const patch_t *patch) {
 }
 
 //---------------------------------------------------------------------------
-static int getIsSolidAtSpot(const column_t *column, int spot) {
+static int getIsSolidAtSpot(const column_t *column, int spot)
+{
   if (!column) return 0;
   while (column->topdelta != 0xff) {
     if (spot < column->topdelta) return 0;
@@ -175,7 +176,8 @@ static int getIsSolidAtSpot(const column_t *column, int spot) {
 // Used to determine whether a column edge (top or bottom) should slope
 // up or down for smoothed masked edges - POPE
 //---------------------------------------------------------------------------
-static int getColumnEdgeSlope(const column_t *prevcolumn, const column_t *nextcolumn, int spot) {
+static int getColumnEdgeSlope(const column_t *prevcolumn, const column_t *nextcolumn, int spot)
+{
   int holeToLeft = !getIsSolidAtSpot(prevcolumn, spot);
   int holeToRight = !getIsSolidAtSpot(nextcolumn, spot);
 

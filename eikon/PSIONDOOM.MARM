@@ -19,6 +19,12 @@ GCCFLAGS=   -c -nostdinc -Wall -Wno-ctor-dtor-privacy -march=armv4 -mapcs-32 -fs
 		-frerun-cse-after-loop  -fschedule-insns -fschedule-insns2 -fexpensive-optimizations\
 		-fforce-mem -fforce-addr -funroll-loops -frerun-loop-opt -frename-registers -fstrict-aliasing
 
+#GCCFLAGS=   -c -nostdinc -Wall -Wno-ctor-dtor-privacy -mcpu=arm710 -mapcs-32 -fsigned-char\
+#		-msoft-float -mshort-load-bytes -O3 -fvtable-thunks \
+#		-fstrength-reduce -fthread-jumps  -fcse-follow-jumps -fcse-skip-blocks\
+#		-frerun-cse-after-loop  -fschedule-insns -fschedule-insns2 -fexpensive-optimizations\
+#		-fforce-mem -fforce-addr -funroll-loops -frerun-loop-opt -frename-registers -fstrict-aliasing
+
 
 
 
@@ -142,7 +148,6 @@ CLEANREL :
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_DATA.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_DEMO.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_DRAW.o"
-	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_FILTER.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_FPS.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_MAIN.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\REL\R_PATCH.o"
@@ -276,7 +281,6 @@ OBJECTS= \
 	$(EPOCBLDREL)\R_DATA.o \
 	$(EPOCBLDREL)\R_DEMO.o \
 	$(EPOCBLDREL)\R_DRAW.o \
-	$(EPOCBLDREL)\R_FILTER.o \
 	$(EPOCBLDREL)\R_FPS.o \
 	$(EPOCBLDREL)\R_MAIN.o \
 	$(EPOCBLDREL)\R_PATCH.o \
@@ -385,7 +389,6 @@ CLEANDEB :
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_DATA.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_DEMO.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_DRAW.o"
-	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_FILTER.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_FPS.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_MAIN.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\DEB\R_PATCH.o"
@@ -520,7 +523,6 @@ OBJECTS= \
 	$(EPOCBLDDEB)\R_DATA.o \
 	$(EPOCBLDDEB)\R_DEMO.o \
 	$(EPOCBLDDEB)\R_DRAW.o \
-	$(EPOCBLDDEB)\R_FILTER.o \
 	$(EPOCBLDDEB)\R_FPS.o \
 	$(EPOCBLDDEB)\R_MAIN.o \
 	$(EPOCBLDDEB)\R_PATCH.o \
@@ -629,7 +631,6 @@ CLEANUREL :
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_DATA.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_DEMO.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_DRAW.o"
-	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_FILTER.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_FPS.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_MAIN.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UREL\R_PATCH.o"
@@ -763,7 +764,6 @@ OBJECTS= \
 	$(EPOCBLDUREL)\R_DATA.o \
 	$(EPOCBLDUREL)\R_DEMO.o \
 	$(EPOCBLDUREL)\R_DRAW.o \
-	$(EPOCBLDUREL)\R_FILTER.o \
 	$(EPOCBLDUREL)\R_FPS.o \
 	$(EPOCBLDUREL)\R_MAIN.o \
 	$(EPOCBLDUREL)\R_PATCH.o \
@@ -872,7 +872,6 @@ CLEANUDEB :
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_DATA.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_DEMO.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_DRAW.o"
-	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_FILTER.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_FPS.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_MAIN.o"
 	-$(ERASE) "..\..\EPOC32\BUILD\PSIONDOOM\MARM\UDEB\R_PATCH.o"
@@ -1007,7 +1006,6 @@ OBJECTS= \
 	$(EPOCBLDUDEB)\R_DATA.o \
 	$(EPOCBLDUDEB)\R_DEMO.o \
 	$(EPOCBLDUDEB)\R_DRAW.o \
-	$(EPOCBLDUDEB)\R_FILTER.o \
 	$(EPOCBLDUDEB)\R_FPS.o \
 	$(EPOCBLDUDEB)\R_MAIN.o \
 	$(EPOCBLDUDEB)\R_PATCH.o \
@@ -5161,11 +5159,6 @@ DEPEND= \
 	"..\..\PSIONDOOM\EIKON\R_DATA.H" \
 	"..\..\PSIONDOOM\EIKON\R_DEFS.H" \
 	"..\..\PSIONDOOM\EIKON\R_DRAW.H" \
-	"..\..\PSIONDOOM\EIKON\R_DRAWCOLPIPELINE.INL" \
-	"..\..\PSIONDOOM\EIKON\R_DRAWCOLUMN.INL" \
-	"..\..\PSIONDOOM\EIKON\R_DRAWFLUSH.INL" \
-	"..\..\PSIONDOOM\EIKON\R_DRAWSPAN.INL" \
-	"..\..\PSIONDOOM\EIKON\R_FILTER.H" \
 	"..\..\PSIONDOOM\EIKON\R_MAIN.H" \
 	"..\..\PSIONDOOM\EIKON\R_PATCH.H" \
 	"..\..\PSIONDOOM\EIKON\R_STATE.H" \
@@ -5196,37 +5189,6 @@ DEPENDUDEB=$(DEPEND)
 
 "$(EPOCBLDUDEB)\R_DRAW.o": "$(SUBPRJ)\R_draw.c" $(DEPENDUDEB)
 	$(GCCUDEB) -I "$(SUBPRJ)\" $(INCDIR) -o $@ "$(SUBPRJ)\R_draw.c"
-
-
-
-# Source R_FILTER.C
-
-DEPEND= \
-	"..\..\EPOC32\INCLUDE\LIBC\LIMITS.H" \
-	"..\..\PSIONDOOM\EIKON\DOOMTYPE.H" \
-	"..\..\PSIONDOOM\EIKON\R_FILTER.H"
-
-DEPENDREL=$(DEPEND)
-
-DEPENDDEB=$(DEPEND)
-
-DEPENDUREL=$(DEPEND)
-
-DEPENDUDEB=$(DEPEND)
-
-
-"$(EPOCBLDREL)\R_FILTER.o": "$(SUBPRJ)\R_filter.c" $(DEPENDREL)
-	$(GCCREL) -I "$(SUBPRJ)\" $(INCDIR) -o $@ "$(SUBPRJ)\R_filter.c"
-
-"$(EPOCBLDDEB)\R_FILTER.o": "$(SUBPRJ)\R_filter.c" $(DEPENDDEB)
-	$(GCCDEB) -I "$(SUBPRJ)\" $(INCDIR) -o $@ "$(SUBPRJ)\R_filter.c"
-
-"$(EPOCBLDUREL)\R_FILTER.o": "$(SUBPRJ)\R_filter.c" $(DEPENDUREL)
-	$(GCCUREL) -I "$(SUBPRJ)\" $(INCDIR) -o $@ "$(SUBPRJ)\R_filter.c"
-
-"$(EPOCBLDUDEB)\R_FILTER.o": "$(SUBPRJ)\R_filter.c" $(DEPENDUDEB)
-	$(GCCUDEB) -I "$(SUBPRJ)\" $(INCDIR) -o $@ "$(SUBPRJ)\R_filter.c"
-
 
 
 # Source R_FPS.C
@@ -6029,7 +5991,6 @@ DEPEND= \
 	"..\..\PSIONDOOM\EIKON\R_DATA.H" \
 	"..\..\PSIONDOOM\EIKON\R_DEFS.H" \
 	"..\..\PSIONDOOM\EIKON\R_DRAW.H" \
-	"..\..\PSIONDOOM\EIKON\R_FILTER.H" \
 	"..\..\PSIONDOOM\EIKON\R_MAIN.H" \
 	"..\..\PSIONDOOM\EIKON\R_PATCH.H" \
 	"..\..\PSIONDOOM\EIKON\R_STATE.H" \

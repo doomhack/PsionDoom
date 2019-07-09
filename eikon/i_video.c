@@ -169,7 +169,7 @@ static void I_UploadNewPalette(int pal)
 	// set the colormap entries
 	for (i=0; i<256; i++)
 	{
-#if 1
+#if 0
 		//Fast version.
 		unsigned int r = palette[0];
 		unsigned int g = palette[1];
@@ -184,7 +184,7 @@ static void I_UploadNewPalette(int pal)
 		double g = (double)(palette[1]) / 255.0;
 		double b = (double)(palette[2]) / 255.0;
 
-		double yd = (((r * 0.2126) + (g * 0.7152) + (b * 0.0722)) * 15.0);
+		double yd = (((r * 0.3) + (g * 0.59) + (b * 0.11)) * 15.0);
 
 		byte y = (byte) (yd+0.5);
 

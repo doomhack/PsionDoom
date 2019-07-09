@@ -73,17 +73,13 @@ typedef struct {
   fixed_t             z; // the current column z coord
   fixed_t             iscale;
   fixed_t             texturemid;
-  int                 texheight;    // killough
-  fixed_t             texu; // the current column u coord
+
   const byte          *source; // first pixel in a column
-  const byte          *prevsource; // first pixel in previous column
-  const byte          *nextsource; // first pixel in next column
+
   const lighttable_t  *colormap;
-  const lighttable_t  *nextcolormap;
   const byte          *translation;
   int                 edgeslope; // OR'ed RDRAW_EDGESLOPE_*
-  // 1 if R_DrawColumn* is currently drawing a masked column, otherwise 0
-  int                 drawingmasked;
+
   enum sloped_edge_type_e edgetype;
 } draw_column_vars_t;
 
@@ -102,7 +98,6 @@ typedef struct {
   fixed_t             ystep;
   const byte          *source; // start of a 64*64 tile image
   const lighttable_t  *colormap;
-  const lighttable_t  *nextcolormap;
 } draw_span_vars_t;
 
 typedef struct {
@@ -134,11 +129,26 @@ R_DrawColumn_f R_GetDrawColumnFunc(enum column_pipeline_e type,
                                    enum draw_filter_type_e filter,
                                    enum draw_filter_type_e filterz);
 
+
+
+
+// The span blitting interface.
+void 	R_DrawColumn (draw_column_vars_t *dcvars);
+
+
+// The Spectre/Invisibility effect.
+void 	R_DrawFuzzColumn (draw_column_vars_t *dcvars);
+
+// Draw with color translation tables,
+//  for player sprite rendering,
+//  Green/Red/Blue/Indigo shirts.
+void	R_DrawTranslatedColumn (draw_column_vars_t *dcvars);
+
+
+
 // Span blitting for rows, floor/ceiling. No Spectre effect needed.
 void R_DrawSpan(draw_span_vars_t *dsvars);
 
-//Plain span. Like SNES Doom.
-void R_DrawSpanPlain(draw_span_vars_t *dsvars);
 
 void R_InitBuffer(int width, int height);
 
@@ -151,9 +161,6 @@ void R_FillBackScreen(void);
 // If the view size is not full screen, draws a border around it.
 void R_DrawViewBorder(void);
 
-// haleyjd 09/13/04: new function to call from main rendering loop
-// which gets rid of the unnecessary reset of various variables during
-// column drawing.
-void R_ResetColumnBuffer(void);
+
 
 #endif

@@ -37,7 +37,6 @@
 #include "w_wad.h"
 #include "r_main.h"
 #include "r_draw.h"
-#include "r_filter.h"
 #include "v_video.h"
 #include "st_stuff.h"
 #include "g_game.h"
@@ -85,15 +84,27 @@ typedef enum
    COL_FLEXADD
 } columntype_e;
 
-static int    temp_x = 0;
-static int    tempyl[4], tempyh[4];
-static byte   byte_tempbuf[MAX_SCREENHEIGHT * 4];
-static int    startx = 0;
-static int    temptype = COL_NONE;
-static int    commontop, commonbot;
-static const byte *temptranmap = NULL;
-// SoM 7-28-04: Fix the fuzz problem.
-static const byte   *tempfuzzmap;
+byte *translationtables;
+
+
+draw_vars_t drawvars = { 
+  NULL, // byte_topleft
+  0, // byte_pitch
+  RDRAW_FILTER_POINT, // filterwall
+  RDRAW_FILTER_POINT, // filterfloor
+  RDRAW_FILTER_POINT, // filtersprite
+  RDRAW_FILTER_POINT, // filterz
+  RDRAW_FILTER_POINT, // filterpatch
+
+  RDRAW_MASKEDCOLUMNEDGE_SQUARE, // sprite_edges
+  RDRAW_MASKEDCOLUMNEDGE_SQUARE, // patch_edges
+
+  // 49152 = FRACUNIT * 0.75
+  // 81920 = FRACUNIT * 1.25
+  49152 // mag_threshold
+};
+
+
 
 //
 // Spectre/Invisibility.
@@ -118,229 +129,16 @@ static int fuzzoffset[FUZZTABLE];
 
 static int fuzzpos = 0;
 
-// render pipelines
-#define RDC_STANDARD      1
-//#define RDC_TRANSLUCENT   2
-#define RDC_TRANSLATED    4
-#define RDC_FUZZ          8
-// no color mapping
-#define RDC_NOCOLMAP     16
-// filter modes
-//#define RDC_DITHERZ      32
-//#define RDC_BILINEAR     64
-//#define RDC_ROUNDED     128
 
-draw_vars_t drawvars = { 
-  NULL, // byte_topleft
-  0, // byte_pitch
-  RDRAW_FILTER_POINT, // filterwall
-  RDRAW_FILTER_POINT, // filterfloor
-  RDRAW_FILTER_POINT, // filtersprite
-  RDRAW_FILTER_POINT, // filterz
-  RDRAW_FILTER_POINT, // filterpatch
-
-  RDRAW_MASKEDCOLUMNEDGE_SQUARE, // sprite_edges
-  RDRAW_MASKEDCOLUMNEDGE_SQUARE, // patch_edges
-
-  // 49152 = FRACUNIT * 0.75
-  // 81920 = FRACUNIT * 1.25
-  49152 // mag_threshold
-};
-
-//
-// Error functions that will abort if R_FlushColumns tries to flush 
-// columns without a column type.
-//
-
-static void R_FlushWholeError(void)
+void R_SetDefaultDrawColumnVars(draw_column_vars_t *dcvars)
 {
-   I_Error("R_FlushWholeColumns called without being initialized.\n");
-}
-
-static void R_FlushHTError(void)
-{
-   I_Error("R_FlushHTColumns called without being initialized.\n");
-}
-
-static void R_QuadFlushError(void)
-{
-   I_Error("R_FlushQuadColumn called without being initialized.\n");
-}
-
-static void (*R_FlushWholeColumns)(void) = R_FlushWholeError;
-static void (*R_FlushHTColumns)(void)    = R_FlushHTError;
-static void (*R_FlushQuadColumn)(void) = R_QuadFlushError;
-
-static void R_FlushColumns(void)
-{
-   if(temp_x != 4 || commontop >= commonbot)
-      R_FlushWholeColumns();
-   else
-   {
-      R_FlushHTColumns();
-      R_FlushQuadColumn();
-   }
-   temp_x = 0;
-}
-
-//
-// R_ResetColumnBuffer
-//
-// haleyjd 09/13/04: new function to call from main rendering loop
-// which gets rid of the unnecessary reset of various variables during
-// column drawing.
-//
-void R_ResetColumnBuffer(void)
-{
-   // haleyjd 10/06/05: this must not be done if temp_x == 0!
-   if(temp_x)
-      R_FlushColumns();
-   temptype = COL_NONE;
-   R_FlushWholeColumns = R_FlushWholeError;
-   R_FlushHTColumns    = R_FlushHTError;
-   R_FlushQuadColumn   = R_QuadFlushError;
-}
-
-#define R_DRAWCOLUMN_PIPELINE RDC_STANDARD
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWhole8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHT8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuad8
-#include "r_drawflush.inl"
-
-#define R_DRAWCOLUMN_PIPELINE RDC_FUZZ
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWholeFuzz8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHTFuzz8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuadFuzz8
-#include "r_drawflush.inl"
-
-//
-// R_DrawColumn
-//
-
-//
-// A column is a vertical slice/span from a wall texture that,
-//  given the DOOM style restrictions on the view orientation,
-//  will always have constant z depth.
-// Thus a special case loop for very fast rendering can
-//  be used. It has also been used with Wolfenstein 3D.
-//
-
-byte *translationtables;
-
-#define R_DRAWCOLUMN_PIPELINE_TYPE RDC_PIPELINE_STANDARD
-#define R_DRAWCOLUMN_PIPELINE_BASE RDC_STANDARD
-
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_DRAWCOLUMN_FUNCNAME_COMPOSITE(postfix) R_DrawColumn8 ## postfix
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWhole8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHT8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuad8
-#include "r_drawcolpipeline.inl"
-
-
-#undef R_DRAWCOLUMN_PIPELINE_BASE
-#undef R_DRAWCOLUMN_PIPELINE_TYPE
-
-//
-// R_DrawTranslatedColumn
-// Used to draw player sprites
-//  with the green colorramp mapped to others.
-// Could be used with different translation
-//  tables, e.g. the lighter colored version
-//  of the BaronOfHell, the HellKnight, uses
-//  identical sprites, kinda brightened up.
-//
-
-#define R_DRAWCOLUMN_PIPELINE_TYPE RDC_PIPELINE_TRANSLATED
-#define R_DRAWCOLUMN_PIPELINE_BASE RDC_TRANSLATED
-
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_DRAWCOLUMN_FUNCNAME_COMPOSITE(postfix) R_DrawTranslatedColumn8 ## postfix
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWhole8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHT8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuad8
-#include "r_drawcolpipeline.inl"
-
-#undef R_DRAWCOLUMN_PIPELINE_BASE
-#undef R_DRAWCOLUMN_PIPELINE_TYPE
-
-//
-// Framebuffer postprocessing.
-// Creates a fuzzy image by copying pixels
-//  from adjacent ones to left and right.
-// Used with an all black colormap, this
-//  could create the SHADOW effect,
-//  i.e. spectres and invisible players.
-//
-
-#define R_DRAWCOLUMN_PIPELINE_TYPE RDC_PIPELINE_FUZZ
-#define R_DRAWCOLUMN_PIPELINE_BASE RDC_FUZZ
-
-#define R_DRAWCOLUMN_PIPELINE_BITS 8
-#define R_DRAWCOLUMN_FUNCNAME_COMPOSITE(postfix) R_DrawFuzzColumn8 ## postfix
-#define R_FLUSHWHOLE_FUNCNAME R_FlushWholeFuzz8
-#define R_FLUSHHEADTAIL_FUNCNAME R_FlushHTFuzz8
-#define R_FLUSHQUAD_FUNCNAME R_FlushQuadFuzz8
-#include "r_drawcolpipeline.inl"
-
-#undef R_DRAWCOLUMN_PIPELINE_BASE
-#undef R_DRAWCOLUMN_PIPELINE_TYPE
-
-static R_DrawColumn_f drawcolumnfuncs[VID_MODEMAX][RDRAW_FILTER_MAXFILTERS][RDRAW_FILTER_MAXFILTERS][RDC_PIPELINE_MAXPIPELINES] = {
-  {
-    {
-      {NULL, NULL, NULL, NULL,},
-      {R_DrawColumn8_PointUV,
-       NULL,
-       R_DrawTranslatedColumn8_PointUV,
-       R_DrawFuzzColumn8_PointUV,},
-      {NULL,
-       NULL,
-       NULL,
-       NULL,},
-      {NULL,
-       NULL,
-       NULL,
-       NULL,},
-    },
-    {
-      {NULL, NULL, NULL, NULL,},
-      {R_DrawColumn8_PointUV_PointZ,
-       NULL,
-       R_DrawTranslatedColumn8_PointUV_PointZ,
-       R_DrawFuzzColumn8_PointUV_PointZ,},
-      {NULL,
-       NULL,
-       NULL,
-       NULL,},
-      {NULL,
-       NULL,
-       NULL,
-       NULL,},
-    },
-  },
-};
-
-R_DrawColumn_f R_GetDrawColumnFunc(enum column_pipeline_e type,
-                                   enum draw_filter_type_e filter,
-                                   enum draw_filter_type_e filterz) {
-  R_DrawColumn_f result = drawcolumnfuncs[V_GetMode()][filterz][filter][type];
-  if (result == NULL)
-    I_Error("R_GetDrawColumnFunc: undefined function (%d, %d, %d)",
-            type, filter, filterz);
-  return result;
-}
-
-void R_SetDefaultDrawColumnVars(draw_column_vars_t *dcvars) {
-  dcvars->x = dcvars->yl = dcvars->yh = dcvars->z = 0;
-  dcvars->iscale = dcvars->texturemid = dcvars->texheight = dcvars->texu = 0;
-  dcvars->source = dcvars->prevsource = dcvars->nextsource = NULL;
-  dcvars->colormap = dcvars->nextcolormap = colormaps[0];
-  dcvars->translation = NULL;
-  dcvars->edgeslope = dcvars->drawingmasked = 0;
-  dcvars->edgetype = drawvars.sprite_edges;
+	dcvars->x = dcvars->yl = dcvars->yh = dcvars->z = 0;
+	dcvars->iscale = dcvars->texturemid = 0;
+	dcvars->source = NULL;
+	dcvars->colormap = colormaps[0];
+	dcvars->translation = NULL;
+	dcvars->edgeslope = 0;
+	dcvars->edgetype = drawvars.sprite_edges;
 }
 
 //
@@ -392,6 +190,152 @@ void R_InitTranslationTables (void)
 }
 
 //
+// A column is a vertical slice/span from a wall texture that,
+//  given the DOOM style restrictions on the view orientation,
+//  will always have constant z depth.
+// Thus a special case loop for very fast rendering can
+//  be used. It has also been used with Wolfenstein 3D.
+// 
+void R_DrawColumn (draw_column_vars_t *dcvars) 
+{ 
+    unsigned int count = dcvars->yh - dcvars->yl;
+
+	const byte *source = dcvars->source;
+	const byte *colormap = dcvars->colormap;
+
+	byte* dest = drawvars.byte_topleft + (dcvars->yl*drawvars.byte_pitch) + dcvars->x;
+
+    const fixed_t		fracstep = dcvars->iscale;
+	fixed_t frac = dcvars->texturemid + (dcvars->yl - centery)*fracstep;
+ 
+    // Zero length, column does not exceed a pixel.
+    if (dcvars->yl >= dcvars->yh)
+		return;
+				 
+    // Inner loop that does the actual texture mapping,
+    //  e.g. a DDA-lile scaling.
+    // This is as fast as it gets.
+    do 
+    {
+		// Re-map color indices from wall texture column
+		//  using a lighting/special effects LUT.
+		*dest = colormap[source[(frac>>FRACBITS)&127]];
+	
+		dest += SCREENWIDTH;
+		frac += fracstep;
+    } while (count--); 
+} 
+
+//
+// Framebuffer postprocessing.
+// Creates a fuzzy image by copying pixels
+//  from adjacent ones to left and right.
+// Used with an all black colormap, this
+//  could create the SHADOW effect,
+//  i.e. spectres and invisible players.
+//
+void R_DrawFuzzColumn (draw_column_vars_t *dcvars)
+{ 
+    unsigned int count;
+
+    byte*		dest;
+    fixed_t		frac;
+    fixed_t		fracstep;
+
+	int dc_yl = dcvars->yl;
+	int dc_yh = dcvars->yh;
+
+    // Adjust borders. Low... 
+    if (!dc_yl) 
+		dc_yl = 1;
+
+    // .. and high.
+    if (dc_yh == viewheight-1) 
+		dc_yh = viewheight - 2; 
+	
+	 count = dc_yh - dc_yl;
+
+    // Zero length, column does not exceed a pixel.
+    if (dc_yl >= dc_yh)
+		return;
+    
+	dest = drawvars.byte_topleft + (dcvars->yl*drawvars.byte_pitch) + dcvars->x;
+
+
+    // Looks familiar.
+    fracstep = dcvars->iscale;
+	
+    frac = dcvars->texturemid + (dc_yl-centery)*fracstep; 
+
+    // Looks like an attempt at dithering,
+    //  using the colormap #6 (of 0-31, a bit
+    //  brighter than average).
+    do 
+    {
+		// Lookup framebuffer, and retrieve
+		//  a pixel that is either one column
+		//  left or right of the current one.
+		// Add index from colormap to index.
+			*dest = fullcolormap[6*256+dest[fuzzoffset[fuzzpos]]]; 
+
+		// Clamp table lookup index.
+		if (++fuzzpos == FUZZTABLE) 
+			fuzzpos = 0;
+	
+		dest += SCREENWIDTH;
+
+		frac += fracstep; 
+    } while (count--); 
+} 
+
+
+//
+// R_DrawTranslatedColumn
+// Used to draw player sprites
+//  with the green colorramp mapped to others.
+// Could be used with different translation
+//  tables, e.g. the lighter colored version
+//  of the BaronOfHell, the HellKnight, uses
+//  identical sprites, kinda brightened up.
+//
+
+
+void R_DrawTranslatedColumn (draw_column_vars_t *dcvars)
+{
+    unsigned int count = dcvars->yh - dcvars->yl;
+
+	const byte *source = dcvars->source;
+	const byte *colormap = dcvars->colormap;
+	const byte *translation = dcvars->translation;
+
+	byte* dest = drawvars.byte_topleft + (dcvars->yl*drawvars.byte_pitch) + dcvars->x;
+
+    const fixed_t		fracstep = dcvars->iscale;
+	fixed_t frac = dcvars->texturemid + (dcvars->yl - centery)*fracstep;
+ 
+    // Zero length, column does not exceed a pixel.
+    if (dcvars->yl >= dcvars->yh)
+		return;
+
+    // Here we do an additional index re-mapping.
+    do 
+    {
+		// Translation tables are used
+		//  to map certain colorramps to other ones,
+		//  used with PLAY sprites.
+		// Thus the "green" ramp of the player 0 sprite
+		//  is mapped to gray, red, black/indigo. 
+		*dest = colormap[translation[source[frac>>FRACBITS]]];
+		dest += SCREENWIDTH;
+	
+		frac += fracstep; 
+    } while (count--); 
+} 
+
+
+
+
+//
 // R_DrawSpan
 // With DOOM style restrictions on view orientation,
 //  the floors and ceilings consist of horizontal slices
@@ -405,38 +349,33 @@ void R_InitTranslationTables (void)
 //
 void R_DrawSpan(draw_span_vars_t *dsvars)
 {
-	unsigned count = dsvars->x2 - dsvars->x1 + 1;
-	fixed_t xfrac = dsvars->xfrac;
-	fixed_t yfrac = dsvars->yfrac;
-	const fixed_t xstep = dsvars->xstep;
-	const fixed_t ystep = dsvars->ystep;
+	unsigned int count = (dsvars->x2 - dsvars->x1);
+	
 	const byte *source = dsvars->source;
 	const byte *colormap = dsvars->colormap;
+	
 	byte* dest = drawvars.byte_topleft + dsvars->y*drawvars.byte_pitch + dsvars->x1;
 	
-	while (count) 
-	{
-		const fixed_t xtemp = (xfrac >> 16) & 63;
-		const fixed_t ytemp = (yfrac >> 10) & 4032;
-		const fixed_t spot = xtemp | ytemp;
-		xfrac += xstep;
-		yfrac += ystep;
+	const unsigned int step = ((dsvars->xstep << 10) & 0xffff0000) | ((dsvars->ystep >> 6)  & 0x0000ffff);
+
+    unsigned int position = ((dsvars->xfrac << 10) & 0xffff0000) | ((dsvars->yfrac >> 6)  & 0x0000ffff);
+
+	unsigned int xtemp, ytemp, spot;
+
+    do
+    {
+		// Calculate current texture index in u,v.
+        ytemp = (position >> 4) & 0x0fc0;
+        xtemp = (position >> 26);
+        spot = xtemp | ytemp;
+
+		// Lookup pixel from flat texture tile,
+		//  re-index using light/colormap.
 		*dest++ = colormap[source[spot]];
-		count--;
-	}
-}
 
-void R_DrawSpanPlain(draw_span_vars_t *dsvars)
-{
-	const unsigned count = dsvars->x2 - dsvars->x1 + 1;
+        position += step;
 
-	const byte *source = dsvars->source;
-	const byte *colormap = dsvars->colormap;
-	const byte* dest = drawvars.byte_topleft + dsvars->y*drawvars.byte_pitch + dsvars->x1;
-	
-	const byte pxl = colormap[source[0]];
-
-	memset(dest, pxl, count);
+	} while (count--);
 }
 
 //
@@ -449,23 +388,22 @@ void R_DrawSpanPlain(draw_span_vars_t *dsvars)
 
 void R_InitBuffer(int width, int height)
 {
-  int i=0;
-  // Handle resize,
-  //  e.g. smaller view windows
-  //  with border and/or status bar.
+	int i=0;
+	// Handle resize,
+	//  e.g. smaller view windows
+	//  with border and/or status bar.
 
-  viewwindowx = (SCREENWIDTH-width) >> 1;
+	viewwindowx = (SCREENWIDTH-width) >> 1;
 
-  // Same with base row offset.
+	// Same with base row offset.
 
-  viewwindowy = width==SCREENWIDTH ? 0 : (SCREENHEIGHT-(ST_SCALED_HEIGHT-1)-height)>>1;
+	viewwindowy = width==SCREENWIDTH ? 0 : (SCREENHEIGHT-(ST_SCALED_HEIGHT-1)-height)>>1;
 
-  drawvars.byte_topleft = screens[0].data + viewwindowy*screens[0].byte_pitch + viewwindowx;
-  drawvars.byte_pitch = screens[0].byte_pitch;
+	drawvars.byte_topleft = screens[0].data + viewwindowy*screens[0].byte_pitch + viewwindowx;
+	drawvars.byte_pitch = screens[0].byte_pitch;
 
-  for (i=0; i<FUZZTABLE; i++)
-	  fuzzoffset[i] = fuzzoffset_org[i]*screens[0].byte_pitch;
-
+	for (i=0; i<FUZZTABLE; i++)
+		fuzzoffset[i] = fuzzoffset_org[i]*screens[0].byte_pitch;
 }
 
 //

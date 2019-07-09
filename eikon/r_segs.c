@@ -125,7 +125,6 @@ void R_RenderMaskedSegRange(drawseg_t *ds, int x1, int x2)
   const rpatch_t *patch;
   R_DrawColumn_f colfunc;
   draw_column_vars_t dcvars;
-  angle_t angle;
 
   R_SetDefaultDrawColumnVars(&dcvars);
 
@@ -137,14 +136,8 @@ void R_RenderMaskedSegRange(drawseg_t *ds, int x1, int x2)
 
   // killough 4/11/98: draw translucent 2s normal textures
 
-  colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_STANDARD, drawvars.filterwall, drawvars.filterz);
-  if (curline->linedef->tranlump >= 0 && general_translucency)
-    {
-      colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_TRANSLUCENT, drawvars.filterwall, drawvars.filterz);
-      tranmap = main_tranmap;
-      if (curline->linedef->tranlump > 0)
-        tranmap = W_CacheLumpNum(curline->linedef->tranlump-1);
-    }
+  colfunc = R_DrawColumn;
+
   // killough 4/11/98: end translucent 2s normal code
 
   frontsector = curline->frontsector;
@@ -183,7 +176,6 @@ void R_RenderMaskedSegRange(drawseg_t *ds, int x1, int x2)
 
   if (fixedcolormap) {
     dcvars.colormap = fixedcolormap;
-    dcvars.nextcolormap = dcvars.colormap; // for filtering -- POPE
   }
 
   patch = R_CacheTextureCompositePatchNum(texnum);
@@ -192,16 +184,10 @@ void R_RenderMaskedSegRange(drawseg_t *ds, int x1, int x2)
   for (dcvars.x = x1 ; dcvars.x <= x2 ; dcvars.x++, spryscale += rw_scalestep)
     if (maskedtexturecol[dcvars.x] != INT_MAX) // dropoff overflow
       {
-        // calculate texture offset - POPE
-        angle = (ds->rw_centerangle + xtoviewangle[dcvars.x]) >> ANGLETOFINESHIFT;
-        dcvars.texu = ds->rw_offset - FixedMul(finetangent[angle], ds->rw_distance);
-        if (drawvars.filterwall == RDRAW_FILTER_LINEAR)
-          dcvars.texu -= (FRACUNIT>>1);
-
+        
         if (!fixedcolormap)
           dcvars.z = spryscale; // for filtering -- POPE
         dcvars.colormap = R_ColourMap(rw_lightlevel,spryscale);
-        dcvars.nextcolormap = R_ColourMap(rw_lightlevel+1,spryscale); // for filtering -- POPE
 
         // killough 3/2/98:
         //
@@ -237,9 +223,7 @@ void R_RenderMaskedSegRange(drawseg_t *ds, int x1, int x2)
           patch,
           colfunc,
           &dcvars,
-          R_GetPatchColumnWrapped(patch, maskedtexturecol[dcvars.x]),
-          R_GetPatchColumnWrapped(patch, maskedtexturecol[dcvars.x]-1),
-          R_GetPatchColumnWrapped(patch, maskedtexturecol[dcvars.x]+1)
+          R_GetPatchColumnWrapped(patch, maskedtexturecol[dcvars.x])
         );
 
         maskedtexturecol[dcvars.x] = INT_MAX; // dropoff overflow
@@ -268,7 +252,7 @@ static int didsolidcol; /* True if at least one column was marked solid */
 static void R_RenderSegLoop (void)
 {
   const rpatch_t *tex_patch;
-  R_DrawColumn_f colfunc = R_GetDrawColumnFunc(RDC_PIPELINE_STANDARD, drawvars.filterwall, drawvars.filterz);
+
   draw_column_vars_t dcvars;
   fixed_t  texturecolumn = 0;   // shut up compiler warning
 
@@ -332,13 +316,15 @@ static void R_RenderSegLoop (void)
           angle_t angle =(rw_centerangle+xtoviewangle[rw_x])>>ANGLETOFINESHIFT;
 
           texturecolumn = rw_offset-FixedMul(finetangent[angle],rw_distance);
+
           if (drawvars.filterwall == RDRAW_FILTER_LINEAR)
             texturecolumn -= (FRACUNIT>>1);
-          dcvars.texu = texturecolumn; // for filtering -- POPE
-          texturecolumn >>= FRACBITS;
+
+          //dcvars.texu = texturecolumn; // for filtering -- POPE
+          
+		  texturecolumn >>= FRACBITS;
 
           dcvars.colormap = R_ColourMap(rw_lightlevel,rw_scale);
-          dcvars.nextcolormap = R_ColourMap(rw_lightlevel+1,rw_scale); // for filtering -- POPE
           dcvars.z = rw_scale; // for filtering -- POPE
 
           dcvars.x = rw_x;
@@ -354,10 +340,7 @@ static void R_RenderSegLoop (void)
           dcvars.texturemid = rw_midtexturemid;
           tex_patch = R_CacheTextureCompositePatchNum(midtexture);
           dcvars.source = R_GetTextureColumn(tex_patch, texturecolumn);
-          dcvars.prevsource = R_GetTextureColumn(tex_patch, texturecolumn-1);
-          dcvars.nextsource = R_GetTextureColumn(tex_patch, texturecolumn+1);
-          dcvars.texheight = midtexheight;
-          colfunc (&dcvars);
+          R_DrawColumn (&dcvars);
           R_UnlockTextureCompositePatchNum(midtexture);
           tex_patch = NULL;
           ceilingclip[rw_x] = viewheight;
@@ -383,10 +366,7 @@ static void R_RenderSegLoop (void)
                   dcvars.texturemid = rw_toptexturemid;
                   tex_patch = R_CacheTextureCompositePatchNum(toptexture);
                   dcvars.source = R_GetTextureColumn(tex_patch,texturecolumn);
-                  dcvars.prevsource = R_GetTextureColumn(tex_patch,texturecolumn-1);
-                  dcvars.nextsource = R_GetTextureColumn(tex_patch,texturecolumn+1);
-                  dcvars.texheight = toptexheight;
-                  colfunc (&dcvars);
+                  R_DrawColumn (&dcvars);
                   R_UnlockTextureCompositePatchNum(toptexture);
                   tex_patch = NULL;
                   ceilingclip[rw_x] = mid;
@@ -417,10 +397,7 @@ static void R_RenderSegLoop (void)
                   dcvars.texturemid = rw_bottomtexturemid;
                   tex_patch = R_CacheTextureCompositePatchNum(bottomtexture);
                   dcvars.source = R_GetTextureColumn(tex_patch, texturecolumn);
-                  dcvars.prevsource = R_GetTextureColumn(tex_patch, texturecolumn-1);
-                  dcvars.nextsource = R_GetTextureColumn(tex_patch, texturecolumn+1);
-                  dcvars.texheight = bottomtexheight;
-                  colfunc (&dcvars);
+                  R_DrawColumn  (&dcvars);
                   R_UnlockTextureCompositePatchNum(bottomtexture);
                   tex_patch = NULL;
                   floorclip[rw_x] = mid;
