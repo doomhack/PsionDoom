@@ -296,19 +296,12 @@ default_t defaults[] =
   {"use_fullscreen",{&use_fullscreen},{1},0,1, /* proff 21/05/2000 */
    def_bool,ss_none},
 
-  {"translucency",{&default_translucency},{0},0,1,   // phares
-   def_bool,ss_none}, // enables translucency
-  {"tran_filter_pct",{&tran_filter_pct},{66},0,100,         // killough 2/21/98
-   def_int,ss_none}, // set percentage of foreground/background translucency mix
   {"screenblocks",{&screenblocks},{10},3,11,  // killough 2/21/98: default to 10
    def_int,ss_none},
   {"usegamma",{&usegamma},{3},0,4, //jff 3/6/98 fix erroneous upper limit in range
    def_int,ss_none}, // gamma correction level // killough 1/18/98
   {"uncapped_framerate", {&movement_smooth},  {0},0,1,
    def_bool,ss_stat},
-
-  {"filter_threshold",{(int*)&drawvars.mag_threshold},{49152},
-   0, UL, def_int,ss_none},
 
   {"Mouse settings",{NULL},{0},UL,UL,def_none,ss_none},
   {"use_mouse",{&usemouse},{1},0,1,

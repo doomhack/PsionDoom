@@ -57,9 +57,6 @@ int comp[COMP_TOTAL], default_comp[COMP_TOTAL];    // killough 10/98
 // v1.1-like pitched sounds
 int pitched_sounds;        // killough
 
-int     default_translucency; // config file says           // phares
-boolean general_translucency; // true if translucency is ok // phares
-
 int demo_insurance, default_demo_insurance;        // killough 1/16/98
 
 int  allow_pushers = 1;      // MT_PUSH Things              // phares 3/10/98

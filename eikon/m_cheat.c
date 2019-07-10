@@ -70,7 +70,6 @@ static void cheat_rate();
 static void cheat_comp();
 static void cheat_friction();
 static void cheat_pushers();
-static void cheat_tnttran();
 static void cheat_massacre();
 static void cheat_ddt();
 static void cheat_hom();
@@ -228,18 +227,11 @@ struct cheat_s cheat[] = {
   {"tntammo",    NULL,                not_net | not_demo,
    cheat_tntammox, -1},  // killough 2/16/98: end generalized weapons
 
-  {"tnttran",    NULL,                always,
-   cheat_tnttran  },     // invoke translucency         // phares
-
   {"tntsmart",   NULL,                not_net | not_demo,
    cheat_smart},         // killough 2/21/98: smart monster toggle
 
   {"tntpitch",   NULL,                always,
    cheat_pitch},         // killough 2/21/98: pitched sound toggle
-
-  // killough 2/21/98: reduce RSI injury by adding simpler alias sequences:
-  {"tntran",     NULL,                always,
-   cheat_tnttran    },   // killough 2/21/98: same as tnttran
 
   {"tntamo",     NULL,                not_net | not_demo,
    cheat_tntammo    },   // killough 2/21/98: same as tntammo
@@ -495,18 +487,6 @@ static void cheat_pushers()
 {
   plyr->message =                      // Ty 03/27/98 - *not* externalized
     (allow_pushers = !allow_pushers) ? "Pushers enabled" : "Pushers disabled";
-}
-
-// translucency cheat
-static void cheat_tnttran()
-{
-  plyr->message =                      // Ty 03/27/98 - *not* externalized
-    (general_translucency = !general_translucency) ? "Translucency enabled" :
-                                                     "Translucency disabled";
-
-  // killough 3/1/98, 4/11/98: cache translucency map on a demand basis
-  if (general_translucency && !main_tranmap)
-    R_InitTranMap(0);
 }
 
 static void cheat_massacre()    // jff 2/01/98 kill all monsters

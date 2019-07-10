@@ -1485,8 +1485,6 @@ static void D_DoomMainSetup(void)
 
     }
 
-  // internal translucency set to config file value               // phares
-  general_translucency = default_translucency;                    // phares
 
   // 1/18/98 killough: Z_Init() call moved to i_main.c
 

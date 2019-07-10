@@ -40,12 +40,6 @@
 #pragma interface
 #endif
 
-enum column_pipeline_e {
-  RDC_PIPELINE_STANDARD,
-  RDC_PIPELINE_TRANSLATED,
-  RDC_PIPELINE_FUZZ,
-  RDC_PIPELINE_MAXPIPELINES,
-};
 
 // Packaged into a struct - POPE
 typedef struct {
@@ -83,11 +77,6 @@ typedef struct {
 typedef struct {
   byte           *byte_topleft;
   int   byte_pitch;
-
-  // Used to specify an early-out magnification threshold for filtering.
-  // If a texture is being minified (dcvars.iscale > rdraw_magThresh), then it
-  // drops back to point filtering.
-  fixed_t mag_threshold;
 } draw_vars_t;
 
 extern draw_vars_t drawvars;

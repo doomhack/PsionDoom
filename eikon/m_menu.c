@@ -2848,12 +2848,6 @@ setup_menu_t gen_settings1[] = { // General Settings screen1
 
   {"Video"       ,S_SKIP|S_TITLE, m_null, G_X, G_YA - 12},
 
-  {"Enable Translucency", S_YESNO, m_null, G_X,
-   G_YA + general_trans*8, {"translucency"}, 0, 0, M_Trans},
-
-  {"Translucency filter percentage", S_NUM, m_null, G_X,
-   G_YA + general_transpct*8, {"tran_filter_pct"}, 0, 0, M_Trans},
-
   {"Uncapped Framerate", S_YESNO, m_null, G_X,
   G_YA + general_uncapped*8, {"uncapped_framerate"}},
 
@@ -2978,14 +2972,6 @@ setup_menu_t gen_settings3[] = { // General Settings screen2
 
   {0,S_SKIP|S_END,m_null}
 };
-
-void M_Trans(void) // To reset translucency after setting it in menu
-{
-  general_translucency = default_translucency; //e6y: Fix for "translucency won't change until you restart the engine"
-
-  if (general_translucency)
-    R_InitTranMap(0);
-}
 
 void M_FullScreen(void) // To (un)set fullscreen video after menu changes
 {

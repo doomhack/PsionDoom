@@ -52,7 +52,6 @@
 //  and the total size == width*height*depth/8.,
 //
 
-byte *viewimage;
 int  viewwidth;
 int  scaledviewwidth;
 int  viewheight;
@@ -64,37 +63,12 @@ int  viewwindowy;
 //  (color ramps used for  suit colors).
 //
 
-// CPhipps - made const*'s
-const byte *tranmap;          // translucency filter maps 256x256   // phares
-const byte *main_tranmap;     // killough 4/11/98
-
-//
-// R_DrawColumn
-// Source is the top of the column to scale.
-//
-
-// SoM: OPTIMIZE for ANYRES
-typedef enum
-{
-   COL_NONE,
-   COL_OPAQUE,
-   COL_TRANS,
-   COL_FLEXTRANS,
-   COL_FUZZ,
-   COL_FLEXADD
-} columntype_e;
-
 byte *translationtables;
 
 
 draw_vars_t drawvars = { 
   NULL, // byte_topleft
   0, // byte_pitch
-
-  // 49152 = FRACUNIT * 0.75
-  // 81920 = FRACUNIT * 1.25
-
-  49152 // mag_threshold
 };
 
 
@@ -145,39 +119,52 @@ extern lighttable_t *(*c_zlight)[LIGHTLEVELS][MAXLIGHTZ];
 
 void R_InitTranslationTables (void)
 {
-  int i, j;
-#define MAXTRANS 3
-  byte transtocolour[MAXTRANS];
+	int i, j;
+	#define MAXTRANS 3
+	byte transtocolour[MAXTRANS];
 
-  // killough 5/2/98:
-  // Remove dependency of colormaps aligned on 256-byte boundary
+	// killough 5/2/98:
+	// Remove dependency of colormaps aligned on 256-byte boundary
 
-  if (translationtables == NULL) // CPhipps - allow multiple calls
-    translationtables = Z_Malloc(256*MAXTRANS, PU_STATIC, 0);
+	if (translationtables == NULL) // CPhipps - allow multiple calls
+		translationtables = Z_Malloc(256*MAXTRANS, PU_STATIC, 0);
 
-  for (i=0; i<MAXTRANS; i++) transtocolour[i] = 255;
+	for (i=0; i<MAXTRANS; i++)
+		transtocolour[i] = 255;
 
-  for (i=0; i<MAXPLAYERS; i++) {
-    byte wantcolour = mapcolor_plyr[i];
-    playernumtotrans[i] = 0;
-    if (wantcolour != 0x70) // Not green, would like translation
-      for (j=0; j<MAXTRANS; j++)
-  if (transtocolour[j] == 255) {
-    transtocolour[j] = wantcolour; playernumtotrans[i] = j+1; break;
-  }
-  }
+	for (i=0; i<MAXPLAYERS; i++)
+	{
+		byte wantcolour = mapcolor_plyr[i];
+		playernumtotrans[i] = 0;
+		if (wantcolour != 0x70) // Not green, would like translation
+		{
+			for (j=0; j<MAXTRANS; j++)
+			{
+				if (transtocolour[j] == 255)
+				{
+					transtocolour[j] = wantcolour; 
+					playernumtotrans[i] = j+1;
+					break;
+				}
+			}
+		}
+	}
 
-  // translate just the 16 green colors
-  for (i=0; i<256; i++)
-    if (i >= 0x70 && i<= 0x7f)
-      {
-  // CPhipps - configurable player colours
-        translationtables[i] = colormaps[0][((i&0xf)<<9) + transtocolour[0]];
-        translationtables[i+256] = colormaps[0][((i&0xf)<<9) + transtocolour[1]];
-        translationtables[i+512] = colormaps[0][((i&0xf)<<9) + transtocolour[2]];
-      }
-    else  // Keep all other colors as is.
-      translationtables[i]=translationtables[i+256]=translationtables[i+512]=i;
+	// translate just the 16 green colors
+	for (i=0; i<256; i++)
+	{
+		if (i >= 0x70 && i<= 0x7f)
+		{
+			// CPhipps - configurable player colours
+			translationtables[i] = colormaps[0][((i&0xf)<<9) + transtocolour[0]];
+			translationtables[i+256] = colormaps[0][((i&0xf)<<9) + transtocolour[1]];
+			translationtables[i+512] = colormaps[0][((i&0xf)<<9) + transtocolour[2]];
+		}
+		else  // Keep all other colors as is.
+		{
+			translationtables[i]=translationtables[i+256]=translationtables[i+512]=i;
+		}
+	}
 }
 
 //
@@ -407,33 +394,33 @@ void R_InitBuffer(int width, int height)
 
 void R_FillBackScreen (void)
 {
-  int     x,y;
+	int     x,y;
 
-  if (scaledviewwidth == SCREENWIDTH)
-    return;
+	if (scaledviewwidth == SCREENWIDTH)
+		return;
 
-  V_DrawBackground(gamemode == commercial ? "GRNROCK" : "FLOOR7_2", 1);
+	V_DrawBackground(gamemode == commercial ? "GRNROCK" : "FLOOR7_2", 1);
 
-  for (x=0; x<scaledviewwidth; x+=8)
-    V_DrawNamePatch(viewwindowx+x,viewwindowy-8,1,"brdr_t", CR_DEFAULT, VPT_NONE);
+	for (x=0; x<scaledviewwidth; x+=8)
+		V_DrawNamePatch(viewwindowx+x,viewwindowy-8,1,"brdr_t", CR_DEFAULT, VPT_NONE);
 
-  for (x=0; x<scaledviewwidth; x+=8)
-    V_DrawNamePatch(viewwindowx+x,viewwindowy+viewheight,1,"brdr_b", CR_DEFAULT, VPT_NONE);
+	for (x=0; x<scaledviewwidth; x+=8)
+		V_DrawNamePatch(viewwindowx+x,viewwindowy+viewheight,1,"brdr_b", CR_DEFAULT, VPT_NONE);
 
-  for (y=0; y<viewheight; y+=8)
-    V_DrawNamePatch(viewwindowx-8,viewwindowy+y,1,"brdr_l", CR_DEFAULT, VPT_NONE);
+	for (y=0; y<viewheight; y+=8)
+		V_DrawNamePatch(viewwindowx-8,viewwindowy+y,1,"brdr_l", CR_DEFAULT, VPT_NONE);
 
-  for (y=0; y<viewheight; y+=8)
-    V_DrawNamePatch(viewwindowx+scaledviewwidth,viewwindowy+y,1,"brdr_r", CR_DEFAULT, VPT_NONE);
+	for (y=0; y<viewheight; y+=8)
+		V_DrawNamePatch(viewwindowx+scaledviewwidth,viewwindowy+y,1,"brdr_r", CR_DEFAULT, VPT_NONE);
 
-  // Draw beveled edge.
-  V_DrawNamePatch(viewwindowx-8,viewwindowy-8,1,"brdr_tl", CR_DEFAULT, VPT_NONE);
+	// Draw beveled edge.
+	V_DrawNamePatch(viewwindowx-8,viewwindowy-8,1,"brdr_tl", CR_DEFAULT, VPT_NONE);
 
-  V_DrawNamePatch(viewwindowx+scaledviewwidth,viewwindowy-8,1,"brdr_tr", CR_DEFAULT, VPT_NONE);
+	V_DrawNamePatch(viewwindowx+scaledviewwidth,viewwindowy-8,1,"brdr_tr", CR_DEFAULT, VPT_NONE);
 
-  V_DrawNamePatch(viewwindowx-8,viewwindowy+viewheight,1,"brdr_bl", CR_DEFAULT, VPT_NONE);
+	V_DrawNamePatch(viewwindowx-8,viewwindowy+viewheight,1,"brdr_bl", CR_DEFAULT, VPT_NONE);
 
-  V_DrawNamePatch(viewwindowx+scaledviewwidth,viewwindowy+viewheight,1,"brdr_br", CR_DEFAULT, VPT_NONE);
+	V_DrawNamePatch(viewwindowx+scaledviewwidth,viewwindowy+viewheight,1,"brdr_br", CR_DEFAULT, VPT_NONE);
 }
 
 //
@@ -455,40 +442,41 @@ void R_VideoErase(int x, int y, int count)
 
 void R_DrawViewBorder(void)
 {
-  int top, side, i;
+	int top, side, i;
 
-  if ((SCREENHEIGHT != viewheight) ||
-      ((automapmode & am_active) && ! (automapmode & am_overlay)))
-  {
-    // erase left and right of statusbar
-    side= ( SCREENWIDTH - ST_SCALED_WIDTH ) / 2;
+	if ((SCREENHEIGHT != viewheight) || ((automapmode & am_active) && ! (automapmode & am_overlay)))
+	{
+		// erase left and right of statusbar
+		side= ( SCREENWIDTH - ST_SCALED_WIDTH ) / 2;
 
-    if (side > 0) {
-      for (i = (SCREENHEIGHT - ST_SCALED_HEIGHT); i < SCREENHEIGHT; i++)
-      {
-        R_VideoErase (0, i, side);
-        R_VideoErase (ST_SCALED_WIDTH+side, i, side);
-      }
-    }
-  }
+		if (side > 0)
+		{
+			for (i = (SCREENHEIGHT - ST_SCALED_HEIGHT); i < SCREENHEIGHT; i++)
+			{
+				R_VideoErase (0, i, side);
+				R_VideoErase (ST_SCALED_WIDTH+side, i, side);
+			}
+		}
+	}
 
-  if ( viewheight >= ( SCREENHEIGHT - ST_SCALED_HEIGHT ))
-    return; // if high-res, don´t go any further!
+	if ( viewheight >= ( SCREENHEIGHT - ST_SCALED_HEIGHT ))
+		return; // if high-res, don´t go any further!
 
-  top = ((SCREENHEIGHT-ST_SCALED_HEIGHT)-viewheight)/2;
-  side = (SCREENWIDTH-scaledviewwidth)/2;
+	top = ((SCREENHEIGHT-ST_SCALED_HEIGHT)-viewheight)/2;
+	side = (SCREENWIDTH-scaledviewwidth)/2;
 
-  // copy top
-  for (i = 0; i < top; i++)
-    R_VideoErase (0, i, SCREENWIDTH);
+	// copy top
+	for (i = 0; i < top; i++)
+		R_VideoErase (0, i, SCREENWIDTH);
 
-  // copy sides
-  for (i = top; i < (top+viewheight); i++) {
-    R_VideoErase (0, i, side);
-    R_VideoErase (viewwidth+side, i, side);
-  }
+	// copy sides
+	for (i = top; i < (top+viewheight); i++)
+	{
+		R_VideoErase (0, i, side);
+		R_VideoErase (viewwidth+side, i, side);
+	}
 
-  // copy bottom
-  for (i = top+viewheight; i < (SCREENHEIGHT - ST_SCALED_HEIGHT); i++)
-    R_VideoErase (0, i, SCREENWIDTH);
+	// copy bottom
+	for (i = top+viewheight; i < (SCREENHEIGHT - ST_SCALED_HEIGHT); i++)
+		R_VideoErase (0, i, SCREENWIDTH);
 }
