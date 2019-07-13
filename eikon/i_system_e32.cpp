@@ -287,7 +287,7 @@ void I_CreateBackBuffer_e32()
 
 //**************************************************************************************
 
-void I_FinishUpdate_e32(byte* srcBuffer, byte* pallete, const unsigned int width, const unsigned int height)
+void I_FinishUpdate_e32(const byte* srcBuffer, const byte* pallete, const unsigned int width, const unsigned int height)
 {
 
 	if(!pScreenBuff)
@@ -303,7 +303,6 @@ void I_FinishUpdate_e32(byte* srcBuffer, byte* pallete, const unsigned int width
 	}
 		
 	
-
 	unsigned int* pSrcScanline = (unsigned int*)srcBuffer;
 	unsigned int* pDstScanline = (unsigned int*)pScreenBuff;
 
@@ -320,36 +319,18 @@ void I_FinishUpdate_e32(byte* srcBuffer, byte* pallete, const unsigned int width
 		//so we don't have to compose each nybble. 1 x pallete[n] = 2 pixels.
 		do
 		{
-
-			unsigned int ps1 = *pSrcScanline++;
-			unsigned int ps2 = *pSrcScanline++;
+			const unsigned int ps1 = *pSrcScanline++;
+			const unsigned int ps2 = *pSrcScanline++;
 			
-			unsigned int p1 = pallete[ ps1			& 0xff];
-			unsigned int p2 = pallete[(ps1 >> 8)	& 0xff];
-			unsigned int p3 = pallete[(ps1 >> 16)	& 0xff];
-			unsigned int p4 = pallete[(ps1 >> 24)];
+			const unsigned int p1 = pallete[ ps1		& 0xff];
+			const unsigned int p2 = pallete[(ps1 >> 8)	& 0xff];
+			const unsigned int p3 = pallete[(ps1 >> 16)	& 0xff];
+			const unsigned int p4 = pallete[(ps1 >> 24)];
 
-			unsigned int p5 = pallete[ ps2			& 0xff];
-			unsigned int p6 = pallete[(ps2 >> 8)	& 0xff];
-			unsigned int p7 = pallete[(ps2 >> 16)	& 0xff];
-			unsigned int p8 = pallete[(ps2 >> 24)];
-
-			*pDstScanline++ =		p1 | (p2 << 8) | (p3 << 16) | (p4 << 24);
-			*pDstScanline++ =		p5 | (p6 << 8) | (p7 << 16) | (p8 << 24);
-
-
-			ps1 = *pSrcScanline++;
-			ps2 = *pSrcScanline++;
-			
-			p1 = pallete[ ps1			& 0xff];
-			p2 = pallete[(ps1 >> 8)		& 0xff];
-			p3 = pallete[(ps1 >> 16)	& 0xff];
-			p4 = pallete[(ps1 >> 24)];
-
-			p5 = pallete[ ps2			& 0xff];
-			p6 = pallete[(ps2 >> 8)		& 0xff];
-			p7 = pallete[(ps2 >> 16)	& 0xff];
-			p8 = pallete[(ps2 >> 24)];
+			const unsigned int p5 = pallete[ ps2		& 0xff];
+			const unsigned int p6 = pallete[(ps2 >> 8)	& 0xff];
+			const unsigned int p7 = pallete[(ps2 >> 16)	& 0xff];
+			const unsigned int p8 = pallete[(ps2 >> 24)];
 
 			*pDstScanline++ =		p1 | (p2 << 8) | (p3 << 16) | (p4 << 24);
 			*pDstScanline++ =		p5 | (p6 << 8) | (p7 << 16) | (p8 << 24);

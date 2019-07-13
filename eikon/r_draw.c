@@ -291,6 +291,8 @@ void R_DrawTranslatedColumn (draw_column_vars_t *dcvars)
     const fixed_t		fracstep = dcvars->iscale;
 	fixed_t frac = dcvars->texturemid + (dcvars->yl - centery)*fracstep;
  
+	const unsigned int sw = SCREENWIDTH;
+
     // Zero length, column does not exceed a pixel.
     if (dcvars->yl >= dcvars->yh)
 		return;
@@ -304,9 +306,9 @@ void R_DrawTranslatedColumn (draw_column_vars_t *dcvars)
 		// Thus the "green" ramp of the player 0 sprite
 		//  is mapped to gray, red, black/indigo. 
 		*dest = colormap[translation[source[frac>>FRACBITS]]];
-		dest += SCREENWIDTH;
+		dest += sw;
 	
-		frac += fracstep; 
+		frac += fracstep;
     } while (count--); 
 } 
 
@@ -350,7 +352,6 @@ void R_DrawSpan(draw_span_vars_t *dsvars)
 		// Lookup pixel from flat texture tile,
 		//  re-index using light/colormap.
 		*dest++ = colormap[source[spot]];
-
         position += step;
 
 	} while (count--);

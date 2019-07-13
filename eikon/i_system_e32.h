@@ -24,7 +24,7 @@ int I_GetVideoWidth_e32();
 
 int I_GetVideoHeight_e32();
 
-void I_FinishUpdate_e32(byte* srcBuffer, byte* pallete, const unsigned int width, const unsigned int height);
+void I_FinishUpdate_e32(const byte* srcBuffer, const byte* pallete, const unsigned int width, const unsigned int height);
 
 void I_ProcessKeyEvents();
 

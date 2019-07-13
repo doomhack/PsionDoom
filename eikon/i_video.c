@@ -176,9 +176,16 @@ static void I_UploadNewPalette(int pal)
 		unsigned int g = palette[1];
 		unsigned int b = palette[2];
 
-		byte y = (byte)(((r+r+r+b+g+g+g+g)>>3) >> 4);
+		//Y = 0.31*R + 0.56*G + 0.125*B
+		//byte y = (byte)(((r+r+r+r+r +b+b+ g+g+g+g+g+g+g+g+g)>>4) >> 4);
+
+		byte y = (byte)(
+							(	(r << 2) + r	+
+								(b << 1)		+
+								(g << 3) + g	)
+							>> 8);
 #else
-		//Y = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+		//Y = 0.3 * R + 0.59 * G + 0.11 * B;
 		//Nice version.
 
 		double r = (double)(palette[0]) / 255.0;
