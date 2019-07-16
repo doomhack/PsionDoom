@@ -170,7 +170,7 @@ static void I_UploadNewPalette(int pal)
 	// set the colormap entries
 	for (i=0; i<256; i++)
 	{
-#if 0
+#if 1
 		//Fast version.
 		unsigned int r = palette[0];
 		unsigned int g = palette[1];

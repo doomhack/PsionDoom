@@ -73,9 +73,6 @@ extern complevel_t compatibility_level, default_compatibility_level;
 #define demo_compatibility (compatibility_level < boom_compatibility_compatibility)
 #define mbf_features (compatibility_level>=mbf_compatibility)
 
-// v1.1-like pitched sounds
-extern int pitched_sounds;        // killough
-
 extern int demo_insurance, default_demo_insurance;      // killough 4/5/98
 
 // -------------------------------------------

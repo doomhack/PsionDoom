@@ -32,6 +32,8 @@ typedef struct
 
 int OpenAudio(AudioSpec *desired);
 
+void StopAudio();
+
 //******************************************************************
 
 class CGameAudio : CBase
@@ -41,15 +43,14 @@ public:
 	~CGameAudio();
 	void Destruct();
 	void SoundUpdate();
-	TInt ProcessSoundSamples(TInt16* aBuffer);
 
 	void StartAudioLoop();
+
+	void StopAudioLoop();
 
 private:
 	CGameAudio(TInt aSamplesPerFrame, AudioSpec* audioSpec);
 	void ConstructL();
-
-	void BuildAlawTable();
 
 	RDevSound		iDevSound;
 	TRequestStatus	iStatus;
@@ -57,13 +58,12 @@ private:
 
 
 	TUint8*			iAlawSoundBuffer;
-	TInt16*			iPcmSoundBuffer;
-	
-	TUint8			iAlawLookupTable[8192];
 
 	TInt			iSamplesPerFrame;
 
 	AudioSpec		iAudioSpec;
+
+	volatile bool	bQuitAudio;
 };
 
 

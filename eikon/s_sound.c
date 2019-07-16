@@ -95,8 +95,8 @@ static musicinfo_t *mus_playing;
 // following is set
 //  by the defaults code in M_misc:
 // number of channels available
-int default_numChannels;
-int numChannels;
+unsigned int default_numChannels;
+unsigned int numChannels;
 
 //jff 3/17/98 to keep track of last IDMUS specified music num
 int idmusnum;

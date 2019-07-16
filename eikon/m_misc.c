@@ -274,9 +274,7 @@ default_t defaults[] =
   {"comp_maskedanim",{&default_comp[comp_maskedanim]},{0},0,1,def_bool,ss_comp,&comp[comp_maskedanim]},
 
   {"Sound settings",{NULL},{0},UL,UL,def_none,ss_none},
-  {"pitched_sounds",{&pitched_sounds},{0},0,1, // killough 2/21/98
-   def_bool,ss_none}, // enables variable pitch in sound effects (from id's original code)
-  {"samplerate",{&snd_samplerate},{8000},8000, def_int,ss_none},
+
   {"sfx_volume",{&snd_SfxVolume},{8},0,15, def_int,ss_none},
   {"music_volume",{&snd_MusicVolume},{8},0,15, def_int,ss_none},
   {"mus_pause_opt",{&mus_pause_opt},{2},0,2, // CPhipps - music pausing

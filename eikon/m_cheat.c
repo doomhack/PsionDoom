@@ -230,9 +230,6 @@ struct cheat_s cheat[] = {
   {"tntsmart",   NULL,                not_net | not_demo,
    cheat_smart},         // killough 2/21/98: smart monster toggle
 
-  {"tntpitch",   NULL,                always,
-   cheat_pitch},         // killough 2/21/98: pitched sound toggle
-
   {"tntamo",     NULL,                not_net | not_demo,
    cheat_tntammo    },   // killough 2/21/98: same as tntammo
 
@@ -636,12 +633,6 @@ static void cheat_smart()
 {
   plyr->message = (monsters_remember = !monsters_remember) ?
     "Smart Monsters Enabled" : "Smart Monsters Disabled";
-}
-
-static void cheat_pitch()
-{
-  plyr->message=(pitched_sounds = !pitched_sounds) ? "Pitch Effects Enabled" :
-    "Pitch Effects Disabled";
 }
 
 //-----------------------------------------------------------------------------

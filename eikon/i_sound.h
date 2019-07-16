@@ -116,6 +116,6 @@ void I_StopSong(int handle);
 void I_UnRegisterSong(int handle);
 
 // CPhipps - put these in config file
-extern int snd_samplerate;
+extern const int snd_samplerate;
 
 #endif

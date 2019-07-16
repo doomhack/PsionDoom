@@ -716,6 +716,10 @@ SOURCE=\PSIONDOOM\EIKON\P_user.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\pcm_to_alaw.h
+# End Source File
+# Begin Source File
+
 SOURCE=\PSIONDOOM\EIKON\LIBTIMIDITY\Playmidi.h
 # End Source File
 # Begin Source File
@@ -841,6 +845,18 @@ SOURCE=\PSIONDOOM\EIKON\Z_bmalloc.h
 # Begin Source File
 
 SOURCE=\PSIONDOOM\EIKON\Z_zone.h
+# End Source File
+# End Group
+# Begin Group "Build Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\PSIONDOOM.MARM
+# End Source File
+# Begin Source File
+
+SOURCE=.\PSIONDOOM.MARM5
 # End Source File
 # End Group
 # End Target

@@ -54,9 +54,6 @@ complevel_t compatibility_level, default_compatibility_level;
 
 int comp[COMP_TOTAL], default_comp[COMP_TOTAL];    // killough 10/98
 
-// v1.1-like pitched sounds
-int pitched_sounds;        // killough
-
 int demo_insurance, default_demo_insurance;        // killough 1/16/98
 
 int  allow_pushers = 1;      // MT_PUSH Things              // phares 3/10/98
