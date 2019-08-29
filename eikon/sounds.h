@@ -48,7 +48,6 @@ struct sfxinfo_struct {
   // up to 6-character name
   const char *name; // CPhipps - const
 
-  // Sfx singularity (only one at a time)
   int singularity;
 
   // Sfx priority
@@ -57,7 +56,6 @@ struct sfxinfo_struct {
   // referenced sound if a link
   sfxinfo_t *link;
 
-  // pitch if a link
   int pitch;
 
   // volume if a link
@@ -289,16 +287,6 @@ typedef enum {
   sfx_skesit,
   sfx_skeatk,
   sfx_radio,
-
-#ifdef DOGS
-  /* killough 11/98: dog sounds */
-  sfx_dgsit,
-  sfx_dgatk,
-  sfx_dgact,
-  sfx_dgdth,
-  sfx_dgpain,
-#endif
-
   NUMSFX
 } sfxenum_t;
 

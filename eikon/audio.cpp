@@ -9,8 +9,7 @@
  *
  *******************************************************************/
 
-
-
+#include <string.h>
 #include "audio.h"
 
 /*
@@ -23,6 +22,7 @@
 
 RThread*		pSoundThread = NULL;
 CGameAudio*		pAudio = NULL;
+
 
 void OpenAudioOnThread(AudioSpec *desired)
 {
@@ -65,8 +65,6 @@ void StopAudio()
 	if(pAudio != NULL)
 		pAudio->StopAudioLoop();
 }
-
-
 
 /*******************************************
  *
@@ -124,6 +122,17 @@ void CGameAudio::ConstructL()
 	User::LeaveIfError(iDevSound.PreparePlayAlawBuffer());
 
 	iAlawSoundBuffer = new TUint8[iSamplesPerFrame];
+
+	iEmptyBuffer = new TUint8[iSamplesPerFrame];
+	memset(iEmptyBuffer, 213, iSamplesPerFrame);
+
+	tEmptyBuffer.Set(iEmptyBuffer, iSamplesPerFrame);
+
+	tAlawBuffer.Set(iAlawSoundBuffer, iSamplesPerFrame);
+
+	iTimer.CreateLocal();
+
+	iSkipCount = 0;
 }
 
 
@@ -137,19 +146,33 @@ void CGameAudio::StartAudioLoop()
 {
 	do
 	{
-		iAudioSpec.callback((unsigned char*)iAlawSoundBuffer, iSamplesPerFrame);
-		SoundUpdate();
+		if(iAudioSpec.callback((unsigned char*)iAlawSoundBuffer, iSamplesPerFrame))
+		{
+			SoundUpdate(tAlawBuffer);
+		}
+		else
+		{
+			if(iSkipCount >= 3)
+				SoundUpdate(tEmptyBuffer);
+			else
+			{
+				iSkipCount++;
+
+				iStatus = KRequestPending;
+				iTimer.After(iStatus, 100000);
+				User::WaitForRequest(iStatus);
+			}
+		}
 
 	} while(bQuitAudio == false);
 }
 
-void CGameAudio::SoundUpdate()
+void CGameAudio::SoundUpdate(const TPtrC8& sndBuffer)
 {
-	const TPtrC8		ptr((const TUint8*) iAlawSoundBuffer, iSamplesPerFrame);
+	iSkipCount = 0;
 
 	iStatus = KRequestPending;
-	iDevSound.PlayAlawData(iStatus, ptr);
+	iDevSound.PlayAlawData(iStatus, sndBuffer);
 
 	User::WaitForRequest(iStatus);
-
 }

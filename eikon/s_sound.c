@@ -60,10 +60,7 @@
 #define S_ATTENUATOR ((S_CLIPPING_DIST-S_CLOSE_DIST)>>FRACBITS)
 
 // Adjustable by menu.
-#define NORM_PITCH 128
 #define NORM_PRIORITY 64
-#define NORM_SEP 128
-#define S_STEREO_SWING (96<<FRACBITS)
 
 const char* S_music_files[NUMMUSIC]; // cournia - stores music file names
 
@@ -107,8 +104,7 @@ int idmusnum;
 
 void S_StopChannel(int cnum);
 
-int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
-                        int *vol, int *sep, int *pitch);
+int S_AdjustSoundParams(mobj_t *listener, mobj_t *source, int *vol);
 
 static int S_getChannel(void *origin, sfxinfo_t *sfxinfo, int is_pickup);
 
@@ -155,7 +151,7 @@ void S_Init(int sfxVolume, int musicVolume)
 
 void S_Stop(void)
 {
-  int cnum;
+  unsigned int cnum;
 
   //jff 1/22/98 skip sound init if sound not enabled
   if (!nosfxparm)
@@ -215,7 +211,7 @@ void S_Start(void)
 
 void S_StartSoundAtVolume(void *origin_p, int sfx_id, int volume)
 {
-  int sep, pitch, priority, cnum, is_pickup;
+  int priority, cnum, is_pickup;
   sfxinfo_t *sfx;
   mobj_t *origin = (mobj_t *) origin_p;
 
@@ -235,7 +231,6 @@ void S_StartSoundAtVolume(void *origin_p, int sfx_id, int volume)
   // Initialize sound parameters
   if (sfx->link)
     {
-      pitch = sfx->pitch;
       priority = sfx->priority;
       volume += sfx->volume;
 
@@ -247,37 +242,18 @@ void S_StartSoundAtVolume(void *origin_p, int sfx_id, int volume)
     }
   else
     {
-      pitch = NORM_PITCH;
       priority = NORM_PRIORITY;
     }
 
   // Check to see if it is audible, modify the params
   // killough 3/7/98, 4/25/98: code rearranged slightly
 
-  if (!origin || origin == players[displayplayer].mo) {
-    sep = NORM_SEP;
+  if (!origin || origin == players[displayplayer].mo)
+  {
     volume *= 8;
   } else
-    if (!S_AdjustSoundParams(players[displayplayer].mo, origin, &volume,
-                             &sep, &pitch))
+    if (!S_AdjustSoundParams(players[displayplayer].mo, origin, &volume))
       return;
-    else
-      if ( origin->x == players[displayplayer].mo->x &&
-           origin->y == players[displayplayer].mo->y)
-        sep = NORM_SEP;
-
-  // hacks to vary the sfx pitches
-  if (sfx_id >= sfx_sawup && sfx_id <= sfx_sawhit)
-    pitch += 8 - (M_Random()&15);
-  else
-    if (sfx_id != sfx_itemup && sfx_id != sfx_tink)
-      pitch += 16 - (M_Random()&31);
-
-  if (pitch<0)
-    pitch = 0;
-
-  if (pitch>255)
-    pitch = 255;
 
   // kill old sound
   for (cnum=0 ; cnum<numChannels ; cnum++)
@@ -305,7 +281,7 @@ void S_StartSoundAtVolume(void *origin_p, int sfx_id, int volume)
 
   // Assigns the handle to one of the channels in the mix/output buffer.
   { // e6y: [Fix] Crash with zero-length sounds.
-    int h = I_StartSound(sfx_id, cnum, volume, sep, pitch, priority);
+    int h = I_StartSound(sfx_id, cnum, volume);
     if (h != -1) channels[cnum].handle = h;
   }
 }
@@ -367,56 +343,59 @@ void S_ResumeSound(void)
 //
 void S_UpdateSounds(void* listener_p)
 {
-  mobj_t *listener = (mobj_t*) listener_p;
-  int cnum;
+	mobj_t *listener = (mobj_t*) listener_p;
+	int cnum;
+	
+	//jff 1/22/98 return if sound is not enabled
+	if (nosfxparm)
+		return;
 
-  //jff 1/22/98 return if sound is not enabled
-  if (nosfxparm)
-    return;
+	I_UpdateMusic();
+	
+	for (cnum=0 ; cnum<numChannels ; cnum++)
+	{
+		sfxinfo_t *sfx;
+		channel_t *c = &channels[cnum];
+		
+		if ((sfx = c->sfxinfo))
+		{
+			if (I_SoundIsPlaying(c->handle))
+			{
+				// initialize parameters
+				int volume = snd_SfxVolume;
 
-  I_UpdateMusic();
+				if (sfx->link)
+				{
+					volume += sfx->volume;
+					
+					if (volume < 1)
+					{
+						S_StopChannel(cnum);
+						continue;
+					}
+					else
+					{
+						if (volume > snd_SfxVolume)
+							volume = snd_SfxVolume;
 
-  for (cnum=0 ; cnum<numChannels ; cnum++)
-    {
-      sfxinfo_t *sfx;
-      channel_t *c = &channels[cnum];
-      if ((sfx = c->sfxinfo))
-        {
-          if (I_SoundIsPlaying(c->handle))
-            {
-              // initialize parameters
-              int volume = snd_SfxVolume;
-              int pitch = NORM_PITCH;
-              int sep = NORM_SEP;
-
-              if (sfx->link)
-                {
-                  pitch = sfx->pitch;
-                  volume += sfx->volume;
-                  if (volume < 1)
-                    {
-                      S_StopChannel(cnum);
-                      continue;
-                    }
-                  else
-                    if (volume > snd_SfxVolume)
-                      volume = snd_SfxVolume;
-                }
-
-              // check non-local sounds for distance clipping
-              // or modify their params
-              if (c->origin && listener_p != c->origin) { // killough 3/20/98
-                if (!S_AdjustSoundParams(listener, c->origin,
-                                         &volume, &sep, &pitch))
-                  S_StopChannel(cnum);
-                else
-                  I_UpdateSoundParams(c->handle, volume, sep, pitch);
-        }
-            }
-          else   // if channel is allocated but sound has stopped, free it
-            S_StopChannel(cnum);
-        }
-    }
+					}
+				}
+				
+				// check non-local sounds for distance clipping
+				// or modify their params
+				
+				if (c->origin && listener_p != c->origin)
+				{ // killough 3/20/98
+					if (!S_AdjustSoundParams(listener, c->origin, &volume))
+						S_StopChannel(cnum);
+					else
+						I_UpdateSoundParams(c->handle, volume);
+				}
+			}
+			else   // if channel is allocated but sound has stopped, free it
+				S_StopChannel(cnum);
+		}
+	}
 }
 
 
@@ -575,70 +554,57 @@ void S_StopChannel(int cnum)
 // Otherwise, modifies parameters and returns 1.
 //
 
-int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
-                        int *vol, int *sep, int *pitch)
+int S_AdjustSoundParams(mobj_t *listener, mobj_t *source, int *vol)
 {
-  fixed_t adx, ady,approx_dist;
-  angle_t angle;
+	fixed_t adx, ady,approx_dist;
+	//angle_t angle;
 
-  //jff 1/22/98 return if sound is not enabled
-  if (nosfxparm)
-    return 0;
+	//jff 1/22/98 return if sound is not enabled
+	if (nosfxparm)
+		return 0;
 
-  // e6y
-  // Fix crash when the program wants to S_AdjustSoundParams() for player
-  // which is not displayplayer and displayplayer was not spawned at the moment.
-  // It happens in multiplayer demos only.
-  //
-  // Stack trace is:
-  // P_SetupLevel() \ P_LoadThings() \ P_SpawnMapThing() \ P_SpawnPlayer(players[0]) \
-  // P_SetupPsprites() \ P_BringUpWeapon() \ S_StartSound(players[0]->mo, sfx_sawup) \
-  // S_StartSoundAtVolume() \ S_AdjustSoundParams(players[displayplayer]->mo, ...);
-  // players[displayplayer]->mo is NULL
-  //
-  // There is no more crash on e1cmnet3.lmp between e1m2 and e1m3
-  // http://competn.doom2.net/pub/compet-n/doom/coop/movies/e1cmnet3.zip
-  if (!listener)
-    return 0;
+	// e6y
+	// Fix crash when the program wants to S_AdjustSoundParams() for player
+	// which is not displayplayer and displayplayer was not spawned at the moment.
+	// It happens in multiplayer demos only.
+	//
+	// Stack trace is:
+	// P_SetupLevel() \ P_LoadThings() \ P_SpawnMapThing() \ P_SpawnPlayer(players[0]) \
+	// P_SetupPsprites() \ P_BringUpWeapon() \ S_StartSound(players[0]->mo, sfx_sawup) \
+	// S_StartSoundAtVolume() \ S_AdjustSoundParams(players[displayplayer]->mo, ...);
+	// players[displayplayer]->mo is NULL
+	//
+	// There is no more crash on e1cmnet3.lmp between e1m2 and e1m3
+	// http://competn.doom2.net/pub/compet-n/doom/coop/movies/e1cmnet3.zip
+	
+	if (!listener)
+		return 0;
 
-  // calculate the distance to sound origin
-  //  and clip it if necessary
-  adx = D_abs(listener->x - source->x);
-  ady = D_abs(listener->y - source->y);
+	// calculate the distance to sound origin
+	// and clip it if necessary
+	adx = D_abs(listener->x - source->x);
+	ady = D_abs(listener->y - source->y);
 
-  // From _GG1_ p.428. Appox. eucledian distance fast.
-  approx_dist = adx + ady - ((adx < ady ? adx : ady)>>1);
+	// From _GG1_ p.428. Appox. eucledian distance fast.
+	approx_dist = adx + ady - ((adx < ady ? adx : ady)>>1);
 
-  if (!approx_dist)  // killough 11/98: handle zero-distance as special case
-    {
-      *sep = NORM_SEP;
-      *vol = snd_SfxVolume;
-      return *vol > 0;
-    }
-
-  if (approx_dist > S_CLIPPING_DIST)
-    return 0;
-
-  // angle of source to listener
-  angle = R_PointToAngle2(listener->x, listener->y, source->x, source->y);
-
-  if (angle <= listener->angle)
-    angle += 0xffffffff;
-  angle -= listener->angle;
-  angle >>= ANGLETOFINESHIFT;
-
-  // stereo separation
-  *sep = 128 - (FixedMul(S_STEREO_SWING,finesine[angle])>>FRACBITS);
-
-  // volume calculation
-  if (approx_dist < S_CLOSE_DIST)
-    *vol = snd_SfxVolume*8;
-  else
-    // distance effect
-    *vol = (snd_SfxVolume * ((S_CLIPPING_DIST-approx_dist)>>FRACBITS) * 8)
-      / S_ATTENUATOR;
-
-  return (*vol > 0);
+	if (!approx_dist)  // killough 11/98: handle zero-distance as special case
+	{
+		*vol = snd_SfxVolume;
+		return *vol > 0;
+	}
+	
+	if (approx_dist > S_CLIPPING_DIST)
+		return 0;
+	
+	// volume calculation
+	if (approx_dist < S_CLOSE_DIST)
+		*vol = snd_SfxVolume*8;
+	else
+		// distance effect
+		*vol = (snd_SfxVolume * ((S_CLIPPING_DIST-approx_dist)>>FRACBITS) * 8) / S_ATTENUATOR;
+	
+	return (*vol > 0);
 }
 
 //

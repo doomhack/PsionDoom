@@ -328,7 +328,7 @@ static void D_DoomLoop(void)
 		WasRenderedInTryRunTics = false;
 		// frame syncronous IO operations
 		
-		I_StartFrame ();
+		I_StartFrame();
 			
 		if (ffmap == gamemap)
 			ffmap = 0;

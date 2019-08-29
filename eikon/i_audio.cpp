@@ -104,8 +104,8 @@ typedef struct
 {
 	const char* data;
 	const char* enddata;
-
 	int vol;
+
 } channel_info_t;
 
 channel_info_t channelinfo[MAX_CHANNELS + 1];
@@ -189,7 +189,7 @@ static int addsfx(int /*sfxid*/, int channel, const char* data, size_t len)
 	return channel;
 }
 
-static void updateSoundParams(int slot, int volume, int /*seperation*/, int /*pitch*/)
+static void updateSoundParams(int slot, int volume)
 {
 
 #ifdef RANGECHECK
@@ -203,9 +203,9 @@ static void updateSoundParams(int slot, int volume, int /*seperation*/, int /*pi
 	channelinfo[slot].vol = volume;
 }
 
-void I_UpdateSoundParams(int handle, int volume, int seperation, int pitch)
+void I_UpdateSoundParams(int handle, int volume)
 {
-  updateSoundParams(handle, volume, seperation, pitch);
+  updateSoundParams(handle, volume);
 }
 
 //
@@ -251,7 +251,7 @@ int I_GetSfxLumpNum(sfxinfo_t* sfx)
 // Pitching (that is, increased speed of playback)
 //  is set, but currently not used by mixing.
 //
-int I_StartSound(int id, int channel, int vol, int sep, int pitch, int /*priority*/)
+int I_StartSound(int id, int channel, int vol)
 {
 	if ((channel < 0) || (channel >= MAX_CHANNELS))
 #ifdef RANGECHECK
@@ -290,7 +290,7 @@ int I_StartSound(int id, int channel, int vol, int sep, int pitch, int /*priorit
 
 	// Returns a handle (not used).
 	addsfx(id, channel, data, len);
-	updateSoundParams(channel, vol, sep, pitch);
+	updateSoundParams(channel, vol);
 
 	return channel;
 }
@@ -342,14 +342,27 @@ boolean I_AnySoundStillPlaying(void)
 // This function currently supports only 16bit.
 //
 
-static void I_UpdateSound(unsigned char *stream, const int len)
+static unsigned int I_UpdateSound(unsigned char *stream, const int len)
 {
 	const unsigned int* streamEnd = (unsigned int*)(stream + len);
 
 	unsigned int* streamPos = (unsigned int*)stream;
 
-	if(len <= 0)
-		return;
+	unsigned int channelPack = 0;
+	unsigned int i = MAX_CHANNELS;
+
+	do
+	{
+		if(channelinfo[i-1].data)
+		{
+			channelPack <<= 4;
+			channelPack |= i;
+		}
+	} while(--i);
+
+
+	if( (!channelPack) && (!channelinfo[MUSIC_CHANNEL].data) )
+		return 0;
 
 	do
     {
@@ -357,47 +370,47 @@ static void I_UpdateSound(unsigned char *stream, const int len)
 		int outSample2 = 0;
 		int outSample3 = 0;
 		int outSample4 = 0;
+		
+		unsigned int channelPack2 = channelPack;
 
-		// Love thy L2 chache - made this a loop.
-		// Now more channels could be set at compile time
-		//  as well. Thus loop those  channels.
-		unsigned int chan = 0;
 
-		do
+		while(channelPack2)
 		{
+			const unsigned int chan = ((channelPack2 & 0xf) - 1);
+			channelPack2 >>= 4;
+
 			channel_info_t* channel = &channelinfo[chan];
 
 			if(channel->data == NULL)
 				continue;
 
-			const int inSample03 = *((int*)(channelinfo[chan].data));
-						
-
 			const int volume = channel->vol;
-						
+
+			const int inSample03 = *((int*)(channel->data));
+					
 			outSample1 += (((inSample03 << 24)	>> 24) * volume);
 			outSample2 += (((inSample03 << 16)	>> 24) * volume);
 			outSample3 += (((inSample03 << 8)	>> 24) * volume);
 			outSample4 += (( inSample03 >> 24)		   * volume);
 
-			channel->data+=4;
+			channel->data += 4;
 
 			// Check whether we are done.
 			if (channel->data > channel->enddata)
 				stopchan(chan);
-
-		} while (++chan < numChannels);
-
-		// Check channel, if active.
+		}
 
 		channel_info_t* channel = &channelinfo[MUSIC_CHANNEL];
-
+		// Check channel, if active.
 		if(channel->data)
-		{		
-			outSample1 += *((short*)  channel->data);
-			outSample2 += *((short*) (channel->data+2));
-			outSample3 += *((short*) (channel->data+4));
-			outSample4 += *((short*) (channel->data+6));
+		{
+			const int inSample01 = *((int*)(channel->data));
+			const int inSample23 = *((int*)(channel->data+4));
+
+			outSample1 += ((inSample01 << 16)	>> 16);
+			outSample2 += ( inSample01 >> 16);
+			outSample3 += ((inSample23 << 16)	>> 16);
+			outSample4 += ( inSample23 >> 16);
 
 			channel->data += 8;
 
@@ -410,23 +423,10 @@ static void I_UpdateSound(unsigned char *stream, const int len)
 			}
 		}
 		
-		outSample1 = (outSample1 + 32768) >> 4;
-		outSample2 = (outSample2 + 32768) >> 4;
-		outSample3 = (outSample3 + 32768) >> 4;
-		outSample4 = (outSample4 + 32768) >> 4;
-		
-		outSample1 = outSample1 > 4095	? 4095	: outSample1;
-		outSample1 = outSample1 < 0		? 0		: outSample1;
-
-		outSample2 = outSample2 > 4095	? 4095	: outSample2;
-		outSample2 = outSample2 < 0		? 0		: outSample2;
-
-		outSample3 = outSample3 > 4095	? 4095	: outSample3;
-		outSample3 = outSample3 < 0		? 0		: outSample3;
-
-		outSample4 = outSample4 > 4095	? 4095	: outSample4;
-		outSample4 = outSample4 < 0		? 0		: outSample4;
-
+		outSample1 = ((outSample1 >> 4) + 2048) & 4095;
+		outSample2 = ((outSample2 >> 4) + 2048) & 4095;
+		outSample3 = ((outSample3 >> 4) + 2048) & 4095;
+		outSample4 = ((outSample4 >> 4) + 2048) & 4095;
 
 		const unsigned int alaw1 = pcm_to_alaw2[outSample1];
 		const unsigned int alaw2 = pcm_to_alaw2[outSample2];
@@ -435,7 +435,9 @@ static void I_UpdateSound(unsigned char *stream, const int len)
 
 		*streamPos = alaw1 | (alaw2 << 8) | (alaw3 << 16) | (alaw4 << 24);
 
-	} while (++streamPos < streamEnd);
+	} while (streamPos++ < streamEnd);
+
+	return 1;
 }
 
 void I_ShutdownSound(void)

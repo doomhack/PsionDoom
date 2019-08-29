@@ -45,7 +45,6 @@ RWindow* wsWindow = NULL;
 int wgToken;
 
 TRequestStatus iWsEventStatus = 0;
-TRequestStatus iRedrawEventStatus = 0;
 
 bool clear_screen = true;
 

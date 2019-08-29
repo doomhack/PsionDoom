@@ -14,6 +14,7 @@
 
 
 #include <e32base.h>
+#include <e32std.h>
 #include <w32std.h>
 #include <d32snd.h>
 
@@ -26,13 +27,14 @@ typedef struct
   unsigned char channels;
   unsigned short samples;
   unsigned int size;
-  void (*callback)(unsigned char *stream, const int len);
+  unsigned int (*callback)(unsigned char *stream, const int len);
 } AudioSpec;
 
 
 int OpenAudio(AudioSpec *desired);
 
 void StopAudio();
+
 
 //******************************************************************
 
@@ -42,7 +44,7 @@ public:
 	static CGameAudio* NewL(TInt aSamplesPerFrame, AudioSpec* audioSpec);
 	~CGameAudio();
 	void Destruct();
-	void SoundUpdate();
+
 
 	void StartAudioLoop();
 
@@ -52,18 +54,27 @@ private:
 	CGameAudio(TInt aSamplesPerFrame, AudioSpec* audioSpec);
 	void ConstructL();
 
+	void SoundUpdate(const TPtrC8& sndBuffer);
+
 	RDevSound		iDevSound;
+	RTimer			iTimer;
+
 	TRequestStatus	iStatus;
 
-
-
 	TUint8*			iAlawSoundBuffer;
+
+	TUint8*			iEmptyBuffer;
 
 	TInt			iSamplesPerFrame;
 
 	AudioSpec		iAudioSpec;
 
 	volatile bool	bQuitAudio;
+
+	TPtrC8			tEmptyBuffer;
+	TPtrC8			tAlawBuffer;
+
+	TUint			iSkipCount;
 };
 
 
